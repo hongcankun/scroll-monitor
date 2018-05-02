@@ -1,0 +1,21 @@
+{
+  "name": "@swgrhck/scroll-monitor",
+  "version": "0.1.0",
+  "description": "This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swgrhck/scroll-monitor.git"
+  },
+  "keywords": [
+    "javascript",
+    "scroll"
+  ],
+  "author": "Chakwen Hong <swgrhck@gmail.com> (https://github.com/swgrhck)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swgrhck/scroll-monitor/issues"
+  },
+  "homepage": "https://github.com/swgrhck/scroll-monitor"
+}
