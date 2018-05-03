@@ -1,0 +1,1 @@
+{"version":3,"sources":["../index.js"],"names":["exports","test","console","log"],"mappings":";;AAAAA,QAAQC,IAAR,GAAe,YAAY;AACzBC,UAAQC,GAAR,CAAY,sCAAZ;AACD,CAFD","file":"index.js","sourcesContent":["exports.test = function () {\r\n  console.log('this is message from scroll-monitor.')\r\n}"]}
