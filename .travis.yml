@@ -1,10 +1,10 @@
 language: node_js
 node_js:
   - "lts/*"
-  - "6"
-  - "8"
+before-install:
+  - if [[ `npm -v` != 6* ]]; then npm install -g npm@latest; fi
 install:
-- npm ci
+  - npm ci
 cache:
   directories:
     - "node_modules"
