@@ -2,7 +2,6 @@
   "name": "@swgrhck/scroll-monitor",
   "version": "0.1.0",
   "description": "This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.",
-  "main": "index.js",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -22,6 +21,7 @@
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-preset-env": "^1.6.1",
-    "eslint": "^4.19.1"
+    "eslint": "^4.19.1",
+    "mocha": "^5.1.1"
   }
 }
