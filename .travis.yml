@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - "lts/*"
-before-install:
+before_install:
   - if [[ `npm -v` != 6* ]]; then npm install -g npm@latest; fi
 install:
   - npm ci
