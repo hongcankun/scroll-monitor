@@ -1,0 +1,8 @@
+language: node_js
+install:
+- npm ci
+cache:
+  directories:
+    - "node_modules"
+git:
+  depth: 3
