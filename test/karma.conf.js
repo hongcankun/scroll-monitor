@@ -4,7 +4,7 @@
 module.exports = function (config) {
   config.set({
     basePath: '..',
-    frameworks: ['mocha', 'detectBrowsers'],
+    frameworks: ['mocha', 'sinon', 'detectBrowsers'],
     files: [
       'dist/*.js',
       'test/*.js'
