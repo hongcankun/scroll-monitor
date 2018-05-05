@@ -6,7 +6,6 @@ module.exports = function (config) {
     basePath: '..',
     frameworks: ['mocha', 'detectBrowsers'],
     files: [
-      '*.js',
       'dist/*.js',
       'test/*.js'
     ],
