@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.",
   "scripts": {
-    "test": "npm-run-all --parallel test-karma*",
-    "test-karma": "karma start test/karma.conf.js"
+    "test": "npm-run-all dist test-karma",
+    "test-karma": "npm-run-all --parallel test-karma-*",
+    "test-karma-plugins": "karma start karma.conf.js",
+    "dist": "npm-run-all lint compile",
+    "lint": "eslint src test",
+    "compile": "npm-run-all --parallel compile-*",
+    "compile-plugins": "babel src/ --out-dir dist/ --source-maps",
+    "compile-plugins-coverage": "cross-env NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps"
   },
   "repository": {
     "type": "git",

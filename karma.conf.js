@@ -6,8 +6,8 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['mocha', 'sinon', 'detectBrowsers'],
     files: [
-      'coverage/*.js',
-      'test/*.js'
+      'coverage/dist/*.js',
+      'test/unit/*.js'
     ],
     reporters: ['progress', 'coverage-istanbul'],
     port: 9876,
@@ -36,7 +36,7 @@ module.exports = function (config) {
       }
     },
     coverageIstanbulReporter: {
-      reports: ['lcov', 'text-summary'],
+      reports: ['html', 'lcovonly', 'text-summary'],
       dir: path.join(__dirname, 'coverage'),
       thresholds: {
         emitWarning: false,
