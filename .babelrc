@@ -4,5 +4,12 @@
   ],
   "ignore": [
     "test/**"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul"
+      ]
+    }
+  }
 }

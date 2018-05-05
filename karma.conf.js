@@ -1,15 +1,15 @@
-// Karma configuration
-// Generated on Sat May 05 2018 14:36:14 GMT+0800 (中国标准时间)
+/* eslint-env node */
+const path = require('path')
 
 module.exports = function (config) {
   config.set({
-    basePath: '..',
+    basePath: '',
     frameworks: ['mocha', 'sinon', 'detectBrowsers'],
     files: [
-      'dist/*.js',
+      'coverage/*.js',
       'test/*.js'
     ],
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage-istanbul'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -33,6 +33,19 @@ module.exports = function (config) {
           return ['FirefoxHeadless']
         }
         throw new Error('Please install Firefox or Chrome')
+      }
+    },
+    coverageIstanbulReporter: {
+      reports: ['lcov', 'text-summary'],
+      dir: path.join(__dirname, 'coverage'),
+      thresholds: {
+        emitWarning: false,
+        global: {
+          statements: 89,
+          lines: 89,
+          branches: 83,
+          functions: 84
+        }
       }
     }
   })
