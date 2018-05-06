@@ -2,9 +2,6 @@
   "presets": [
     "env"
   ],
-  "ignore": [
-    "test/**"
-  ],
   "env": {
     "test": {
       "plugins": [
