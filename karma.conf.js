@@ -9,7 +9,7 @@ module.exports = function (config) {
       'coverage/dist/*.js',
       'test/unit/*.js'
     ],
-    reporters: ['progress', 'coverage-istanbul'],
+    reporters: [process.env.TRAVIS ? 'dots' : 'progress', 'coverage-istanbul'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -26,7 +26,8 @@ module.exports = function (config) {
       usePhantomJS: false,
       preferHeadless: true,
       postDetection: function (availableBrowsers) {
-        if (typeof process.env.TRAVIS_JOB_ID !== 'undefined' || availableBrowsers.includes('Chrome')) {
+        if (process.env.TRAVIS || availableBrowsers.includes('Chrome')
+          || availableBrowsers.includes('ChromeHeadless')) {
           return ['ChromeHeadless']
         }
         if (availableBrowsers.includes('Firefox')) {
@@ -36,15 +37,15 @@ module.exports = function (config) {
       }
     },
     coverageIstanbulReporter: {
-      reports: ['html', 'lcovonly', 'text-summary'],
+      reports: ['lcov', 'text-summary'],
       dir: path.join(__dirname, 'coverage'),
       thresholds: {
         emitWarning: false,
         global: {
-          statements: 89,
-          lines: 89,
-          branches: 83,
-          functions: 84
+          statements: 80,
+          lines: 80,
+          branches: 80,
+          functions: 80
         }
       }
     }
