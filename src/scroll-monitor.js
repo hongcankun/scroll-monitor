@@ -39,8 +39,9 @@ const ScrollMonitor = (() => {
       this._target = target
       this._subscribers = new Set()
       this._scrollMetric = ScrollMonitor._resolveScrollMetric(target)
+      this._boundEventListener = this._onTargetScroll.bind(this)
 
-      this._target.addEventListener(Events.SCROLL, this._onTargetScroll)
+      this._target.addEventListener(Events.SCROLL, this._boundEventListener)
       MonitorMap.set(target, this)
     }
 
@@ -146,12 +147,13 @@ const ScrollMonitor = (() => {
      * Once invoked this method, the ScrollMonitor would not be available anymore.
      */
     destroy() {
+      MonitorMap.delete(this._target)
+      this._target.removeEventListener(Events.SCROLL, this._boundEventListener)
+
       this._target = null
       this._subscribers = null
       this._scrollMetric = null
-
-      this._target.removeEventListener(Events.SCROLL, this._onTargetScroll)
-      MonitorMap.delete(this)
+      this._boundEventListener = null
     }
 
     // Private
@@ -175,9 +177,14 @@ const ScrollMonitor = (() => {
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, function () {
     document.querySelectorAll(Selectors.SCROLL_MONITOR).forEach(subscriber => {
-      document.querySelectorAll(subscriber.dataset[Data.TARGET]).forEach(target => {
-        ScrollMonitor.of(target).subscribe(subscriber)
-      })
+      let dataTarget = subscriber.dataset[Data.TARGET]
+      if (dataTarget) {
+        document.querySelectorAll(subscriber.dataset[Data.TARGET]).forEach(target => {
+          ScrollMonitor.of(target).subscribe(subscriber)
+        })
+      } else {
+        ScrollMonitor.of(window).subscribe(subscriber)
+      }
     })
   })
 
