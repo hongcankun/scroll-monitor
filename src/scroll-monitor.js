@@ -1,4 +1,3 @@
-import ScrollMetric from './scroll-metric'
 import EventResolver from './event-resolver'
 
 const ScrollMonitor = (() => {
@@ -175,6 +174,38 @@ const ScrollMonitor = (() => {
       }
     }
 
+  }
+
+  class ScrollMetric {
+    constructor(height, width, top, left) {
+      this._height = height
+      this._width = width
+      this._top = top
+      this._left = left
+    }
+
+    // Getter
+    //
+
+    static get VERSION() {
+      return VERSION
+    }
+
+    get height() {
+      return this._height
+    }
+
+    get width() {
+      return this._width
+    }
+
+    get top() {
+      return this._top
+    }
+
+    get left() {
+      return this._left
+    }
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, function () {
