@@ -107,7 +107,9 @@ const ScrollMonitor = (() => {
       }
       if (!isValidType) {
         let sValidTargetTypes = []
-        ValidTargetTypes.forEach(type => sValidTargetTypes.push(type.name))
+        for (let validType of ValidTargetTypes) {
+          sValidTargetTypes.push(validType.name)
+        }
         throw new Error(`The target must be instance of one in ${sValidTargetTypes.join(', ')}!`)
       }
     }
@@ -176,16 +178,16 @@ const ScrollMonitor = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, function () {
-    document.querySelectorAll(Selectors.SCROLL_MONITOR).forEach(subscriber => {
-      let dataTarget = subscriber.dataset[Data.TARGET]
-      if (dataTarget) {
-        document.querySelectorAll(subscriber.dataset[Data.TARGET]).forEach(target => {
+    for (let subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
+      let targetData = subscriber.dataset[Data.TARGET]
+      if (targetData) {
+        for (let target of document.querySelectorAll(targetData)) {
           ScrollMonitor.of(target).subscribe(subscriber)
-        })
+        }
       } else {
         ScrollMonitor.of(window).subscribe(subscriber)
       }
-    })
+    }
   })
 
   return ScrollMonitor
