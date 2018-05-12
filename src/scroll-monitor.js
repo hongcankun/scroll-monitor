@@ -6,7 +6,7 @@ const ScrollMonitor = (() => {
   const EventNameSpace = 'scroll-monitor'
 
   const Selectors = {
-    SCROLL_MONITOR: '[data-monitor="scroll"]'
+    SCROLL_MONITOR: '[data-monitor~="scroll"]'
   }
 
   const Data = {
