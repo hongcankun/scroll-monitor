@@ -5,18 +5,13 @@ const EventResolver = (() => {
   const VERSION = '0.1.0'
 
   class EventResolver {
-    constructor(eventType) {
-      this._eventType = eventType
-    }
-
     // Getter
 
     static get VERSION() {
       return VERSION
     }
 
-    get eventType() {
-      return this._eventType
+    get eventTypes() {
     }
 
     // Public
