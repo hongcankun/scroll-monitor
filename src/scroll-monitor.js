@@ -205,7 +205,7 @@ const ScrollMonitor = (() => {
     }
   }
 
-  window.addEventListener(Events.DOM_CONTENT_LOADED, function () {
+  window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
     for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
       const targetData = subscriber.dataset[Data.TARGET]
       if (targetData) {
