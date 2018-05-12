@@ -10,7 +10,7 @@ const ScrollMonitor = (() => {
   }
 
   const Data = {
-    TARGET: 'monitor-target'
+    TARGET: 'monitorTarget'
   }
 
   const Events = {
