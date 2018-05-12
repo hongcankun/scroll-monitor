@@ -3,6 +3,7 @@ import EventResolver from './event-resolver'
 const ScrollMonitor = (() => {
 
   const VERSION = '0.1.0'
+  const EventNameSpace = 'scroll-monitor'
 
   const Selectors = {
     SCROLL_MONITOR: '[data-monitor="scroll"]'
@@ -48,6 +49,10 @@ const ScrollMonitor = (() => {
 
     static get VERSION() {
       return VERSION
+    }
+
+    static get NAMESPACE() {
+      return EventNameSpace
     }
 
     /*
