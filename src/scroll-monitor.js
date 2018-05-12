@@ -9,7 +9,7 @@ const ScrollMonitor = (() => {
   }
 
   const Data = {
-    TARGET: 'target'
+    TARGET: 'monitor-target'
   }
 
   const Events = {
@@ -186,10 +186,6 @@ const ScrollMonitor = (() => {
 
     // Getter
     //
-
-    static get VERSION() {
-      return VERSION
-    }
 
     get height() {
       return this._height
