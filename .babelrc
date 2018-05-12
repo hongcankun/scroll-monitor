@@ -3,12 +3,9 @@
     [
       "env",
       {
-        "modules": false
+        "modules": "umd"
       }
     ]
-  ],
-  "plugins": [
-    "transform-es2015-modules-strip"
   ],
   "env": {
     "test": {
