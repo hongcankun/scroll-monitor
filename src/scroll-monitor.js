@@ -102,7 +102,7 @@ const ScrollMonitor = (() => {
 
     static _checkTargetValid(target) {
       let isValidType = false
-      for (let validTargetType of ValidTargetTypes) {
+      for (const validTargetType of ValidTargetTypes) {
         if (target instanceof validTargetType) {
           isValidType = true
           break
@@ -110,7 +110,7 @@ const ScrollMonitor = (() => {
       }
       if (!isValidType) {
         let sValidTargetTypes = []
-        for (let validType of ValidTargetTypes) {
+        for (const validType of ValidTargetTypes) {
           sValidTargetTypes.push(validType.name)
         }
         throw new Error(`The target must be instance of one in ${sValidTargetTypes.join(', ')}!`)
@@ -163,13 +163,13 @@ const ScrollMonitor = (() => {
     // Private
 
     _onTargetScroll(event) {
-      let lastScrollMetric = this._scrollMetric
+      const lastScrollMetric = this._scrollMetric
       this._scrollMetric = ScrollMonitor._resolveScrollMetric(this._target)
 
-      for (let eventResolver of EventResolvers) {
-        let resolvedEvent = eventResolver.resolve(lastScrollMetric, this._scrollMetric, event)
+      for (const eventResolver of EventResolvers) {
+        const resolvedEvent = eventResolver.resolve(lastScrollMetric, this._scrollMetric, event)
         if (resolvedEvent && resolvedEvent instanceof Event) {
-          for (let subscriber of this._subscribers) {
+          for (const subscriber of this._subscribers) {
             subscriber.dispatchEvent(resolvedEvent)
           }
         }
@@ -206,10 +206,10 @@ const ScrollMonitor = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, function () {
-    for (let subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
-      let targetData = subscriber.dataset[Data.TARGET]
+    for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
+      const targetData = subscriber.dataset[Data.TARGET]
       if (targetData) {
-        for (let target of document.querySelectorAll(targetData)) {
+        for (const target of document.querySelectorAll(targetData)) {
           ScrollMonitor.of(target).subscribe(subscriber)
         }
       } else {
