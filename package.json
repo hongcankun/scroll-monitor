@@ -9,8 +9,8 @@
     "js-dist": "npm-run-all js-lint js-compile",
     "js-lint": "eslint src test",
     "js-compile": "npm-run-all --parallel js-compile-*",
-    "js-compile-plugins": "cross-env PLUGINS=true babel src/ --out-dir dist/ --source-maps",
-    "js-compile-plugins-coverage": "cross-env PLUGINS=true NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps"
+    "js-compile-standalone": "babel src/ --out-dir dist/ --source-maps",
+    "js-compile-coverage": "cross-env NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps"
   },
   "repository": {
     "type": "git",
