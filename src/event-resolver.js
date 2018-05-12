@@ -10,7 +10,6 @@ const EventResolver = (() => {
     }
 
     // Getter
-    //
 
     static get VERSION() {
       return VERSION
@@ -21,10 +20,10 @@ const EventResolver = (() => {
     }
 
     // Public
-    //
 
     /*
-    *
+    * Resolve metrics and event received from ScrollMonitor and
+    * return a new resolved Event which should be dispatched to subscribers
     */
     resolve(lastScrollMetric, currentScrollMetric, event) {
       throw new Error('Method is not implemented. Subclass must override this method to resolve scroll event!')

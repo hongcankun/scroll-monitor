@@ -45,7 +45,6 @@ const ScrollMonitor = (() => {
     }
 
     // Static
-    //
 
     static get VERSION() {
       return VERSION
@@ -126,7 +125,6 @@ const ScrollMonitor = (() => {
     }
 
     // Public
-    //
 
     /*
      * Add a new subscriber to the ScrollMonitor.
@@ -158,7 +156,6 @@ const ScrollMonitor = (() => {
     }
 
     // Private
-    //
 
     _onTargetScroll(event) {
       let lastScrollMetric = this._scrollMetric
@@ -185,7 +182,6 @@ const ScrollMonitor = (() => {
     }
 
     // Getter
-    //
 
     get height() {
       return this._height
