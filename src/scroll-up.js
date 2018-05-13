@@ -1,5 +1,4 @@
-import ScrollMonitor from '../scroll-monitor'
-import EventResolver from '../event-resolver'
+import {EventResolver, ScrollMonitor} from './scroll-monitor'
 
 const ScrollUpEventResolver = (() => {
 
