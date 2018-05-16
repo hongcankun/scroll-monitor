@@ -8,12 +8,14 @@
     "test": "npm-run-all js-dist js-test",
     "js-test": "npm-run-all --parallel js-test-karma",
     "js-test-karma": "karma start karma.conf.js",
-    "js-dist": "npm-run-all js-lint js-compile",
+    "js-dist": "npm-run-all js-lint js-compile js-minify",
     "js-lint": "eslint src test",
     "js-compile": "npm-run-all --parallel js-compile-*",
     "js-compile-standalone": "babel src/ --out-dir dist/ --source-maps",
     "js-compile-coverage": "cross-env NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps",
-    "js-compile-bundle": "cross-env BUNDLE=true rollup -c"
+    "js-compile-bundle": "cross-env BUNDLE=true rollup -c",
+    "js-minify": "npm-run-all --parallel js-minify-*",
+    "js-minify-bundle": "uglifyjs dist/bundle/scroll-monitor.bundle.umd.js --output dist/bundle/scroll-monitor.bundle.umd.min.js --compress typeofs=false --mangle --source-map \"content=dist/bundle/scroll-monitor.bundle.umd.js.map,includeSources,url=scroll-monitor.bundle.umd.min.js.map\" --comments \"/^!/\""
   },
   "repository": {
     "type": "git",
@@ -49,7 +51,8 @@
     "npm-run-all": "^4.1.2",
     "rollup": "^0.58.2",
     "rollup-plugin-babel": "^4.0.0-beta.4",
-    "sinon": "^5.0.3"
+    "sinon": "^5.0.3",
+    "uglify-js": "^3.3.25"
   },
   "browserslist": [
     "last 1 major version",
