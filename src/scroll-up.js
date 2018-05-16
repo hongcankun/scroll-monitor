@@ -1,5 +1,12 @@
 import {EventResolver, ScrollMonitor} from './scroll-monitor'
 
+/**
+ * ----------------------------------------------------------------------------------
+ * ScrollMonitor (v0.1.0): scroll-up.js
+ * Licensed under MIT (https://github.com/swgrhck/scroll-monitor/blob/master/LICENSE)
+ * ----------------------------------------------------------------------------------
+ */
+
 const ScrollUpEventResolver = (() => {
 
   const VERSION = '0.1.0'

@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = function (config) {
   config.set({
-    basePath: '',
+    basePath: '..',
     frameworks: ['mocha', 'sinon', 'detectBrowsers'],
     files: [
       'coverage/dist/*.js',

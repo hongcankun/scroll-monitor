@@ -1,4 +1,4 @@
-import pkg from './package.json'
+import pkg from '../package.json'
 import babel from 'rollup-plugin-babel'
 
 const year = new Date().getFullYear()
