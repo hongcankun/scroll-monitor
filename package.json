@@ -21,15 +21,10 @@
     "type": "git",
     "url": "git+https://github.com/swgrhck/scroll-monitor.git"
   },
-  "keywords": [
-    "javascript",
-    "scroll"
-  ],
+  "keywords": ["javascript", "scroll"],
   "author": "Chakwen Hong <swgrhck@gmail.com> (https://swgrhck.github.io/)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/swgrhck/scroll-monitor/issues"
-  },
+  "bugs": {"url": "https://github.com/swgrhck/scroll-monitor/issues"},
   "homepage": "https://github.com/swgrhck/scroll-monitor",
   "dependencies": {},
   "devDependencies": {
