@@ -5,5 +5,8 @@
   "extends": "../.eslintrc.json",
   "parserOptions": {
     "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "off"
   }
 }

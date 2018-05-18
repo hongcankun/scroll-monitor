@@ -14,8 +14,7 @@
     "js-compile-standalone": "babel src/ --out-dir dist/ --source-maps --ignore src/index.js",
     "js-compile-coverage": "cross-env NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps --ignore src/index.js",
     "js-compile-bundle": "cross-env BUNDLE=true rollup --config build/rollup.config.js",
-    "js-minify": "npm-run-all --parallel js-minify-*",
-    "js-minify-bundle": "uglifyjs dist/bundle/scroll-monitor.bundle.umd.js --output dist/bundle/scroll-monitor.bundle.umd.min.js --compress typeofs=false --mangle --source-map \"content=dist/bundle/scroll-monitor.bundle.umd.js.map,includeSources,url=scroll-monitor.bundle.umd.min.js.map\" --comments \"/^!/\""
+    "js-minify": "node build/minify.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +34,7 @@
     "babel-plugin-istanbul": "^4.1.6",
     "cross-env": "^5.1.4",
     "eslint": "^4.19.1",
+    "glob": "^7.1.2",
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage-istanbul-reporter": "^1.4.2",
