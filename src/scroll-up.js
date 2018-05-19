@@ -21,7 +21,7 @@ const ScrollUpResolver = (() => {
   }
 
   const DataDefault = {
-    TOGGLE_CLASS: 'active'
+    TOGGLE_CLASS: 'scroll-up'
   }
 
   const Events = {
