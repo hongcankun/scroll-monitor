@@ -2,8 +2,8 @@
   "name": "@swgrhck/scroll-monitor",
   "version": "0.1.0",
   "description": "This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.",
-  "module": "dist/bundle/scroll-monitor.bundle.esm.js",
-  "browser": "dist/bundle/scroll-monitor.bundle.umd.js",
+  "module": "dist/bundle/scroll-monitor.esm.js",
+  "browser": "dist/bundle/scroll-monitor.umd.js",
   "scripts": {
     "test": "npm-run-all js-dist js-test",
     "js-test": "npm-run-all --parallel js-test-karma",

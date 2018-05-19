@@ -7,7 +7,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      name: 'scrollMonitorBundle',
+      name: 'scrollMonitor',
       file: pkg.browser,
       format: 'umd',
       sourcemap: true,

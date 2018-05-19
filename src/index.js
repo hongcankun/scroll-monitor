@@ -1,6 +1,7 @@
-import {EventResolver, ScrollMonitor} from './scroll-monitor'
+import Resolver from './resolver'
+import Monitor from './monitor'
 import ScrollUp from './scroll-up'
 
 export {
-  EventResolver, ScrollMonitor, ScrollUp
+  Resolver, Monitor, ScrollUp
 }

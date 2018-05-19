@@ -1,4 +1,5 @@
-import {EventResolver, ScrollMonitor} from './scroll-monitor'
+import Resolver from './resolver'
+import Monitor from './monitor'
 
 /**
  * ----------------------------------------------------------------------------------
@@ -7,7 +8,7 @@ import {EventResolver, ScrollMonitor} from './scroll-monitor'
  * ----------------------------------------------------------------------------------
  */
 
-const ScrollUpEventResolver = (() => {
+const ScrollUpResolver = (() => {
 
   const VERSION = '0.1.0'
 
@@ -16,7 +17,7 @@ const ScrollUpEventResolver = (() => {
   }
 
   const Data = {
-    TOGGLE_CLASS: 'toggleClass'
+    TOGGLE_CLASS: 'scrollUpClass'
   }
 
   const DataDefault = {
@@ -24,12 +25,12 @@ const ScrollUpEventResolver = (() => {
   }
 
   const Events = {
-    SCROLL_UP: `scroll.up.${ScrollMonitor.NAMESPACE}`,
-    SCROLL_UP_OFF: `scroll.up.off.${ScrollMonitor.NAMESPACE}`,
+    SCROLL_UP: `scroll.up.${Resolver.NAMESPACE}`,
+    SCROLL_UP_OFF: `scroll.up.off.${Resolver.NAMESPACE}`,
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
   }
 
-  class ScrollUpEventResolver extends EventResolver {
+  class ScrollUpResolver extends Resolver {
     // Getter
 
     get eventTypes() {
@@ -42,9 +43,9 @@ const ScrollUpEventResolver = (() => {
 
     // Public
 
-    resolve(lastScrollMetric, currentScrollMetric) {
-      let lastTop = lastScrollMetric.top
-      let crtTop = currentScrollMetric.top
+    resolve(lastMetric, crtMetric) {
+      let lastTop = lastMetric.top
+      let crtTop = crtMetric.top
       if (crtTop < lastTop) {
         return new Event(Events.SCROLL_UP)
       } else {
@@ -54,7 +55,7 @@ const ScrollUpEventResolver = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    ScrollMonitor.registerEventResolver(new ScrollUpEventResolver())
+    Monitor.registerResolver(new ScrollUpResolver())
     for (const subscriber of document.querySelectorAll(Selectors.SCROLL_UP_MONITOR)) {
       const toggleClass = subscriber.dataset[Data.TOGGLE_CLASS] || DataDefault.TOGGLE_CLASS
       subscriber.addEventListener(Events.SCROLL_UP, () => {
@@ -66,7 +67,7 @@ const ScrollUpEventResolver = (() => {
     }
   })
 
-  return ScrollUpEventResolver
+  return ScrollUpResolver
 })()
 
-export default ScrollUpEventResolver
+export default ScrollUpResolver
