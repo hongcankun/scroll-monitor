@@ -3,10 +3,13 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        modules: process.env.BUNDLE ? false : 'umd'
+        modules: false
       }
     ]
   ],
+  plugins: [
+    !process.env.BUNDLE && 'transform-es2015-modules-strip'
+  ].filter(Boolean),
   env: {
     test: {
       plugins: ['istanbul']

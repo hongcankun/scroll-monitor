@@ -20,10 +20,15 @@
     "type": "git",
     "url": "git+https://github.com/swgrhck/scroll-monitor.git"
   },
-  "keywords": ["javascript", "scroll"],
+  "keywords": [
+    "javascript",
+    "scroll"
+  ],
   "author": "Chakwen Hong <swgrhck@gmail.com> (https://swgrhck.github.io/)",
   "license": "MIT",
-  "bugs": {"url": "https://github.com/swgrhck/scroll-monitor/issues"},
+  "bugs": {
+    "url": "https://github.com/swgrhck/scroll-monitor/issues"
+  },
   "homepage": "https://github.com/swgrhck/scroll-monitor",
   "dependencies": {},
   "devDependencies": {
@@ -32,6 +37,7 @@
     "@babel/preset-env": "^7.0.0-beta.47",
     "babel-eslint": "^8.2.3",
     "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-transform-es2015-modules-strip": "^0.1.1",
     "cross-env": "^5.1.4",
     "eslint": "^4.19.1",
     "glob": "^7.1.2",
