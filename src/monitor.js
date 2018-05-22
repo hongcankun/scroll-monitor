@@ -30,9 +30,12 @@ const Monitor = (() => {
   const Resolvers = new Set()
 
   class Monitor {
-    /*
-     * This method will erase the Monitor of the target if exists, then return a new one.
-     * Consider use Monitor.of(target) instead.
+    /**
+     * This method will destroy the Monitor of the target if exists, then return a new one.
+     * Consider use {@link Monitor.of} instead.
+     * @param target the target of the monitor
+     * @throws when target is invalid
+     * @see Monitor.of
      */
     constructor(target) {
       target = target || window
@@ -59,7 +62,7 @@ const Monitor = (() => {
 
     /**
      * Return the copy of the monitor map whose keys are targets and values are monitors
-     * @returns {Map<any, any>}
+     * @return {Map<Window | Element, Monitor>}
      */
     static get monitorMap() {
       return new Map(MonitorMap)
@@ -67,16 +70,19 @@ const Monitor = (() => {
 
     /**
      * Return the copy of a Set contains all registered resolvers
-     * @returns {Set<any>}
+     * @return {Set<Resolver>}
      */
     static get resolvers() {
       return new Set(Resolvers)
     }
 
-    /*
+    /**
      * Get the Monitor of the target.
      * If the Monitor of the target exists, then return it.
      * Otherwise, create a new Monitor for the target and return.
+     * @param target target of the monitor
+     * @throws when target is not valid
+     * @return {Monitor}
      */
     static of(target) {
       Monitor._checkTarget(target)
@@ -87,16 +93,19 @@ const Monitor = (() => {
       }
     }
 
-    /*
-     * Register a new Resolver to ALL Monitors.
+    /**
+     * Register a new Resolver
+     * @param resolver should be an instance of {@link Resolver}
+     * @throws when resolver is not valid
      */
     static registerResolver(resolver) {
       this._checkResolver(resolver)
       Resolvers.add(resolver)
     }
 
-    /*
-     * Unregister a Resolver from ALL Monitors.
+    /**
+     * Unregister a resolver
+     * @param resolver the resolver should be unregistered
      */
     static unregisterResolver(resolver) {
       Resolvers.delete(resolver)
@@ -147,24 +156,27 @@ const Monitor = (() => {
 
     // Public
 
-    /*
+    /**
      * Add a new subscriber to the Monitor.
+     * @param subscriber should be an instance of {@link EventTarget}
+     * @throws when subscriber is not valid
      */
     subscribe(subscriber) {
       Monitor._checkSubscriber(subscriber)
       this._subscribers.add(subscriber)
     }
 
-    /*
+    /**
      * Remove a subscriber from the Monitor.
+     * @param subscriber the subscriber should be removed from the monitor
      */
     unsubscribe(subscriber) {
       this._subscribers.delete(subscriber)
     }
 
-    /*
+    /**
      * Destroy the Monitor.
-     * Once invoked this method, the Monitor would not be available anymore.
+     * Once this method invoked, this Monitor would not be available anymore.
      */
     destroy() {
       MonitorMap.delete(this._target)
