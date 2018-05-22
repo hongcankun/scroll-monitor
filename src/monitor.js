@@ -86,6 +86,14 @@ const Monitor = (() => {
       Resolvers.delete(resolver)
     }
 
+    /**
+     * Destroy all managed Monitors and unregister all Resolvers
+     */
+    static reset() {
+      MonitorMap.forEach(monitor => monitor.destroy())
+      Resolvers.clear()
+    }
+
     static _resolveMetric(target) {
       let metric
       if (target instanceof Window) {
