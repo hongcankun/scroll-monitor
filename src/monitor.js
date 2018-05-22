@@ -57,6 +57,22 @@ const Monitor = (() => {
       return VERSION
     }
 
+    /**
+     * Return the copy of the monitor map whose keys are targets and values are monitors
+     * @returns {Map<any, any>}
+     */
+    static get monitorMap() {
+      return new Map(MonitorMap)
+    }
+
+    /**
+     * Return the copy of a Set contains all registered resolvers
+     * @returns {Set<any>}
+     */
+    static get resolvers() {
+      return new Set(Resolvers)
+    }
+
     /*
      * Get the Monitor of the target.
      * If the Monitor of the target exists, then return it.
