@@ -119,6 +119,22 @@ const Monitor = (() => {
       Resolvers.clear()
     }
 
+    /**
+     * Create monitors and add subscribers to monitors by data attributes
+     */
+    static initByData() {
+      for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
+        const targetData = subscriber.dataset[Data.MONITOR_TARGET]
+        if (targetData) {
+          for (const target of document.querySelectorAll(targetData)) {
+            Monitor.of(target).subscribe(subscriber)
+          }
+        } else {
+          Monitor.of(window).subscribe(subscriber)
+        }
+      }
+    }
+
     static _resolveMetric(target) {
       let metric
       if (target instanceof Window) {
@@ -234,16 +250,7 @@ const Monitor = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
-      const targetData = subscriber.dataset[Data.MONITOR_TARGET]
-      if (targetData) {
-        for (const target of document.querySelectorAll(targetData)) {
-          Monitor.of(target).subscribe(subscriber)
-        }
-      } else {
-        Monitor.of(window).subscribe(subscriber)
-      }
-    }
+    Monitor.initByData()
   })
 
   return Monitor
