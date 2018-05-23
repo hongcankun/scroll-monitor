@@ -1,10 +1,9 @@
 /* eslint-env node */
-const path = require('path')
 
 module.exports = function (config) {
   config.set({
     basePath: '..',
-    frameworks: ['mocha', 'sinon', 'detectBrowsers'],
+    frameworks: ['mocha', 'chai', 'sinon', 'detectBrowsers'],
     files: [
       'coverage/dist/*.js',
       'test/unit/*.js'
@@ -38,14 +37,14 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       reports: ['lcov', 'text-summary'],
-      dir: path.join(__dirname, 'coverage'),
+      dir: 'coverage',
       thresholds: {
         emitWarning: false,
         global: {
-          statements: 80,
-          lines: 80,
-          branches: 80,
-          functions: 80
+          statements: 95,
+          lines: 95,
+          branches: 95,
+          functions: 95
         }
       }
     }
