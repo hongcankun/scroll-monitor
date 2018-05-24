@@ -6,8 +6,9 @@
   "browser": "dist/bundle/scroll-monitor.umd.js",
   "scripts": {
     "test": "npm-run-all js-dist js-test",
-    "js-test": "npm-run-all --parallel js-test-karma",
+    "js-test": "npm-run-all --parallel js-test-karma*",
     "js-test-karma": "karma start test/karma.conf.js",
+    "js-test-karma-bundle": "karma start test/karma-bundle.conf.js",
     "js-dist": "npm-run-all js-lint js-compile js-minify",
     "js-lint": "eslint src test build",
     "js-compile": "npm-run-all --parallel js-compile-*",
