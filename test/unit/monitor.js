@@ -10,227 +10,225 @@ describe('Monitor', function () {
     expect(Monitor).to.be.a('function')
   })
 
-  describe('STATIC', function () {
-    describe('#VERSION', function () {
-      it('should return as a string', function () {
-        expect(Monitor).to.have.property('VERSION').that.is.a('string')
-      })
+  describe('static #VERSION', function () {
+    it('should return as a string', function () {
+      expect(Monitor).to.have.property('VERSION').that.is.a('string')
+    })
+  })
+
+  describe('static #monitorMap', function () {
+    it('should return an empty map it there is no monitor registered', function () {
+      expect(Monitor.monitorMap).to.be.empty
     })
 
-    describe('#monitorMap', function () {
-      it('should return an empty map it there is no monitor registered', function () {
-        expect(Monitor.monitorMap).to.be.empty
-      })
+    it('should return a copy of the monitorMap contains all', function () {
+      var target1 = window
+      Monitor.of(target1)
+      expect(Monitor.monitorMap).to.have.key(target1).and.have.property('size', 1)
 
-      it('should return a copy of the monitorMap contains all', function () {
-        var target1 = window
-        Monitor.of(target1)
-        expect(Monitor.monitorMap).to.have.key(target1).and.have.property('size', 1)
-
-        var target2 = document.body
-        Monitor.of(target2)
-        expect(Monitor.monitorMap).to.have.all.keys(target1, target2).and.have.property('size', 2)
-      })
-
-      it('should return a copy that will not influence origin map', function () {
-        Monitor.of(window)
-        expect(Monitor.monitorMap).to.have.key(window)
-
-        var copy = Monitor.monitorMap
-        copy.clear()
-        expect(copy).to.be.empty
-        expect(Monitor.monitorMap).to.have.key(window)
-      })
+      var target2 = document.body
+      Monitor.of(target2)
+      expect(Monitor.monitorMap).to.have.all.keys(target1, target2).and.have.property('size', 2)
     })
 
-    describe('#resolvers', function () {
-      it('should return an empty set it there is no resolver registered', function () {
-        expect(Monitor.resolvers).to.be.empty
-      })
+    it('should return a copy that will not influence origin map', function () {
+      Monitor.of(window)
+      expect(Monitor.monitorMap).to.have.key(window)
 
-      it('should return a copy of the resolvers contains all', function () {
-        var resolver1 = new Resolver()
-        Monitor.registerResolver(resolver1)
-        expect(Monitor.resolvers).to.have.key(resolver1).and.have.property('size', 1)
+      var copy = Monitor.monitorMap
+      copy.clear()
+      expect(copy).to.be.empty
+      expect(Monitor.monitorMap).to.have.key(window)
+    })
+  })
 
-        var resolver2 = new Resolver()
-        Monitor.registerResolver(resolver2)
-        expect(Monitor.resolvers).to.have.all.keys(resolver1, resolver2).and.have.property('size', 2)
-      })
-
-      it('should return a copy that will not influence origin set', function () {
-        var resolver = new Resolver()
-        Monitor.registerResolver(resolver)
-        expect(Monitor.resolvers).to.have.key(resolver)
-
-        var copy = Monitor.resolvers
-        copy.clear()
-        expect(copy).to.be.empty
-        expect(Monitor.resolvers).to.have.key(resolver)
-      })
+  describe('static #resolvers', function () {
+    it('should return an empty set it there is no resolver registered', function () {
+      expect(Monitor.resolvers).to.be.empty
     })
 
-    describe('#of', function () {
-      it('should throw error when target is not valid', function () {
-        expect(function () {
-          Monitor.of(Monitor)
-        }).to.throw()
-      })
+    it('should return a copy of the resolvers contains all', function () {
+      var resolver1 = new Resolver()
+      Monitor.registerResolver(resolver1)
+      expect(Monitor.resolvers).to.have.key(resolver1).and.have.property('size', 1)
 
-      it('should create and return a new monitor when the monitor of the target does not exist', function () {
-        var target = window
-        expect(Monitor.monitorMap.get(target)).to.not.exist
-        expect(Monitor.of(target)).to.exist.and.be.an.instanceof(Monitor)
-        expect(Monitor.monitorMap.get(target)).to.exist.and.be.an.instanceof(Monitor)
-      })
-
-      it('should return same monitor when the monitor of the target has existed', function () {
-        var target = window
-        var monitor = new Monitor(target)
-        expect(Monitor.monitorMap.get(target)).to.exist
-        expect(Monitor.of(target)).to.be.equal(monitor)
-        expect(Monitor.of(target)).to.be.equal(Monitor.of(target))
-      })
+      var resolver2 = new Resolver()
+      Monitor.registerResolver(resolver2)
+      expect(Monitor.resolvers).to.have.all.keys(resolver1, resolver2).and.have.property('size', 2)
     })
 
-    describe('#registerResolver', function () {
-      it('should throw err when resolver is not an instance of Resolver', function () {
-        expect(function () {
-          Monitor.registerResolver(Monitor)
-        }).to.throw()
-      })
+    it('should return a copy that will not influence origin set', function () {
+      var resolver = new Resolver()
+      Monitor.registerResolver(resolver)
+      expect(Monitor.resolvers).to.have.key(resolver)
 
-      it('should add resolver it the resolver has not been registered', function () {
-        var resolver = new Resolver()
-        expect(Monitor.resolvers.has(resolver)).to.be.false
+      var copy = Monitor.resolvers
+      copy.clear()
+      expect(copy).to.be.empty
+      expect(Monitor.resolvers).to.have.key(resolver)
+    })
+  })
 
-        Monitor.registerResolver(resolver)
-        expect(Monitor.resolvers.has(resolver)).to.be.true
-      })
-
-      it('should make no sense if the resolver has been registered', function () {
-        var resolver = new Resolver()
-        expect(Monitor.resolvers).to.be.empty
-        expect(Monitor.resolvers.has(resolver)).to.be.false
-
-        Monitor.registerResolver(resolver)
-        expect(Monitor.resolvers).to.have.property('size', 1)
-        expect(Monitor.resolvers.has(resolver)).to.be.true
-
-        Monitor.registerResolver(resolver)
-        expect(Monitor.resolvers).to.have.property('size', 1)
-        expect(Monitor.resolvers.has(resolver)).to.be.true
-      })
+  describe('static #of', function () {
+    it('should throw error when target is not valid', function () {
+      expect(function () {
+        Monitor.of(Monitor)
+      }).to.throw()
     })
 
-    describe('#unregisterResolver', function () {
-      it('should remove resolver it exist', function () {
-        var resolver = new Resolver()
-        Monitor.registerResolver(resolver)
-        expect(Monitor.resolvers).to.have.key(resolver)
-
-        Monitor.unregisterResolver(resolver)
-        expect(Monitor.resolvers).to.not.have.key(resolver)
-      })
+    it('should create and return a new monitor when the monitor of the target does not exist', function () {
+      var target = window
+      expect(Monitor.monitorMap.get(target)).to.not.exist
+      expect(Monitor.of(target)).to.exist.and.be.an.instanceof(Monitor)
+      expect(Monitor.monitorMap.get(target)).to.exist.and.be.an.instanceof(Monitor)
     })
 
-    describe('#reset', function () {
-      it('should reset all monitors and resolvers', function () {
-        Monitor.of(window)
-        Monitor.registerResolver(new Resolver())
+    it('should return same monitor when the monitor of the target has existed', function () {
+      var target = window
+      var monitor = new Monitor(target)
+      expect(Monitor.monitorMap.get(target)).to.exist
+      expect(Monitor.of(target)).to.be.equal(monitor)
+      expect(Monitor.of(target)).to.be.equal(Monitor.of(target))
+    })
+  })
 
-        expect(Monitor.monitorMap).to.not.be.empty
-        expect(Monitor.resolvers).to.not.be.empty
-      })
+  describe('static #registerResolver', function () {
+    it('should throw err when resolver is not an instance of Resolver', function () {
+      expect(function () {
+        Monitor.registerResolver(Monitor)
+      }).to.throw()
     })
 
-    describe('#initByData', function () {
-      it('should create monitors and add subscribers to monitors by data attributes properly', function () {
-        var div = document.createElement('div')
-        div.dataset['monitor'] = 'scroll'
-        div.classList.add('target')
-        document.body.appendChild(div)
+    it('should add resolver it the resolver has not been registered', function () {
+      var resolver = new Resolver()
+      expect(Monitor.resolvers.has(resolver)).to.be.false
 
-        var p = document.createElement('p')
-        p.dataset['monitor'] = 'scroll'
-        p.dataset['monitorTarget'] = '.target'
-        div.appendChild(p)
-
-        Monitor.initByData()
-        expect(Monitor.monitorMap).to.have.all.keys(window, div)
-        expect(Monitor.of(window)._subscribers).to.include(div)
-        expect(Monitor.of(div)._subscribers).to.include(p)
-      })
+      Monitor.registerResolver(resolver)
+      expect(Monitor.resolvers.has(resolver)).to.be.true
     })
 
-    describe('#_resolveMetric', function () {
-      it('should throw err when target is not valid', function () {
-        expect(function () {
-          Monitor._resolveMetric(Monitor)
-        }).to.throw()
-      })
+    it('should make no sense if the resolver has been registered', function () {
+      var resolver = new Resolver()
+      expect(Monitor.resolvers).to.be.empty
+      expect(Monitor.resolvers.has(resolver)).to.be.false
 
-      it('should return a ScrollMetric when target is an instance of Window', function () {
-        var scrollMetric = Monitor._resolveMetric(window)
-        expect(scrollMetric).to.have.property('height').that.is.a('number')
-        expect(scrollMetric).to.have.property('width').that.is.a('number')
-        expect(scrollMetric).to.have.property('top').that.is.a('number')
-        expect(scrollMetric).to.have.property('left').that.is.a('number')
-      })
+      Monitor.registerResolver(resolver)
+      expect(Monitor.resolvers).to.have.property('size', 1)
+      expect(Monitor.resolvers.has(resolver)).to.be.true
 
-      it('should return a ScrollMetric when target is an instance of Element', function () {
-        var scrollMetric = Monitor._resolveMetric(document.body)
-        expect(scrollMetric).to.have.property('height').that.is.a('number')
-        expect(scrollMetric).to.have.property('width').that.is.a('number')
-        expect(scrollMetric).to.have.property('top').that.is.a('number')
-        expect(scrollMetric).to.have.property('left').that.is.a('number')
-      })
+      Monitor.registerResolver(resolver)
+      expect(Monitor.resolvers).to.have.property('size', 1)
+      expect(Monitor.resolvers.has(resolver)).to.be.true
+    })
+  })
+
+  describe('static #unregisterResolver', function () {
+    it('should remove resolver it exist', function () {
+      var resolver = new Resolver()
+      Monitor.registerResolver(resolver)
+      expect(Monitor.resolvers).to.have.key(resolver)
+
+      Monitor.unregisterResolver(resolver)
+      expect(Monitor.resolvers).to.not.have.key(resolver)
+    })
+  })
+
+  describe('#reset', function () {
+    it('should reset all monitors and resolvers', function () {
+      Monitor.of(window)
+      Monitor.registerResolver(new Resolver())
+
+      expect(Monitor.monitorMap).to.not.be.empty
+      expect(Monitor.resolvers).to.not.be.empty
+    })
+  })
+
+  describe('static #initByData', function () {
+    it('should create monitors and add subscribers to monitors by data attributes properly', function () {
+      var div = document.createElement('div')
+      div.dataset['monitor'] = 'scroll'
+      div.classList.add('target')
+      document.body.appendChild(div)
+
+      var p = document.createElement('p')
+      p.dataset['monitor'] = 'scroll'
+      p.dataset['monitorTarget'] = '.target'
+      div.appendChild(p)
+
+      Monitor.initByData()
+      expect(Monitor.monitorMap).to.have.all.keys(window, div)
+      expect(Monitor.of(window)._subscribers).to.include(div)
+      expect(Monitor.of(div)._subscribers).to.include(p)
+    })
+  })
+
+  describe('static #_resolveMetric', function () {
+    it('should throw err when target is not valid', function () {
+      expect(function () {
+        Monitor._resolveMetric(Monitor)
+      }).to.throw()
     })
 
-    describe('#_checkTarget', function () {
-      it('should not throw error when target is an instance of Window or Element', function () {
-        expect(function () {
-          Monitor._checkTarget(window)
-        }).to.not.throw()
-
-        expect(function () {
-          Monitor._checkTarget(document.body)
-        }).to.not.throw()
-      })
-
-      it('should throw error when target is not valid', function () {
-        expect(function () {
-          Monitor._checkTarget(Monitor)
-        }).to.throw()
-      })
+    it('should return a ScrollMetric when target is an instance of Window', function () {
+      var scrollMetric = Monitor._resolveMetric(window)
+      expect(scrollMetric).to.have.property('height').that.is.a('number')
+      expect(scrollMetric).to.have.property('width').that.is.a('number')
+      expect(scrollMetric).to.have.property('top').that.is.a('number')
+      expect(scrollMetric).to.have.property('left').that.is.a('number')
     })
 
-    describe('#_checkSubscriber', function () {
-      it('should throw error when subscriber is not an instance of EventTarget', function () {
-        expect(function () {
-          Monitor._checkSubscriber(Monitor)
-        }).to.throw()
-      })
+    it('should return a ScrollMetric when target is an instance of Element', function () {
+      var scrollMetric = Monitor._resolveMetric(document.body)
+      expect(scrollMetric).to.have.property('height').that.is.a('number')
+      expect(scrollMetric).to.have.property('width').that.is.a('number')
+      expect(scrollMetric).to.have.property('top').that.is.a('number')
+      expect(scrollMetric).to.have.property('left').that.is.a('number')
+    })
+  })
 
-      it('should not throw error when subscriber is an instance of EventTarget', function () {
-        expect(function () {
-          Monitor._checkSubscriber(new EventTarget())
-        }).to.not.throw()
-      })
+  describe('static #_checkTarget', function () {
+    it('should not throw error when target is an instance of Window or Element', function () {
+      expect(function () {
+        Monitor._checkTarget(window)
+      }).to.not.throw()
+
+      expect(function () {
+        Monitor._checkTarget(document.body)
+      }).to.not.throw()
     })
 
-    describe('#_checkResolver', function () {
-      it('should throw error when resolver is not an instance of Resolver', function () {
-        expect(function () {
-          Monitor._checkResolver(Monitor)
-        }).to.throw()
-      })
+    it('should throw error when target is not valid', function () {
+      expect(function () {
+        Monitor._checkTarget(Monitor)
+      }).to.throw()
+    })
+  })
 
-      it('should not throw error when resolver is an instance of Resolver', function () {
-        expect(function () {
-          Monitor._checkResolver(new Resolver())
-        }).to.not.throw()
-      })
+  describe('static #_checkSubscriber', function () {
+    it('should throw error when subscriber is not an instance of EventTarget', function () {
+      expect(function () {
+        Monitor._checkSubscriber(Monitor)
+      }).to.throw()
+    })
+
+    it('should not throw error when subscriber is an instance of EventTarget', function () {
+      expect(function () {
+        Monitor._checkSubscriber(new EventTarget())
+      }).to.not.throw()
+    })
+  })
+
+  describe('static #_checkResolver', function () {
+    it('should throw error when resolver is not an instance of Resolver', function () {
+      expect(function () {
+        Monitor._checkResolver(Monitor)
+      }).to.throw()
+    })
+
+    it('should not throw error when resolver is an instance of Resolver', function () {
+      expect(function () {
+        Monitor._checkResolver(new Resolver())
+      }).to.not.throw()
     })
   })
 

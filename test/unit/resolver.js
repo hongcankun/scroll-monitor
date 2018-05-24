@@ -5,17 +5,15 @@ describe('Resolver', function () {
     expect(Resolver).to.be.a('function')
   })
 
-  describe('STATIC', function () {
-    describe('#VERSION', function () {
-      it('should return as a string', function () {
-        expect(Resolver).to.have.property('VERSION').that.is.a('string')
-      })
+  describe('static #VERSION', function () {
+    it('should return as a string', function () {
+      expect(Resolver).to.have.property('VERSION').that.is.a('string')
     })
+  })
 
-    describe('#NAMESPACE', function () {
-      it('should return as a string', function () {
-        expect(Resolver).to.have.property('NAMESPACE').that.is.a('string')
-      })
+  describe('static #NAMESPACE', function () {
+    it('should return as a string', function () {
+      expect(Resolver).to.have.property('NAMESPACE').that.is.a('string')
     })
   })
 
