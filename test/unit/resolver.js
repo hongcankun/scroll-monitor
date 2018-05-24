@@ -1,4 +1,4 @@
-var Resolver = Resolver || window.scrollMonitor.Resolver
+var Resolver = window.Resolver || window.scrollMonitor.Resolver
 
 describe('Resolver', function () {
   it('should Resolver defined properly', function () {

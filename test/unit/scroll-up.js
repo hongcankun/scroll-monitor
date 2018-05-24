@@ -1,5 +1,4 @@
-/*global ScrollUpResolver:false */
-var ScrollUp = ScrollUpResolver || window.scrollMonitor.ScrollUp
+var ScrollUp = window.ScrollUpResolver || window.scrollMonitor.ScrollUp
 
 describe('ScrollUp', function () {
   it('should defind as a function', function () {

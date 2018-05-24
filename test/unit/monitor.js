@@ -1,5 +1,5 @@
-var Resolver = Resolver || window.scrollMonitor.Resolver
-var Monitor = Monitor || window.scrollMonitor.Monitor
+var Resolver = window.Resolver || window.scrollMonitor.Resolver
+var Monitor = window.Monitor || window.scrollMonitor.Monitor
 
 describe('Monitor', function () {
   beforeEach('reset Monitor', function () {
