@@ -7,8 +7,8 @@
 
 const Resolver = (() => {
 
-  const VERSION = '0.1.0'
-  const EVENT_NAMESPACE = 'scroll-monitor'
+  const VERSION = '0.1.0';
+  const EVENT_NAMESPACE = 'scroll-monitor';
 
   class Resolver {
     // Getter
@@ -43,7 +43,7 @@ const Resolver = (() => {
   }
 
   return Resolver
-})()
+})();
 
 /**
  * ----------------------------------------------------------------------------------
@@ -54,25 +54,25 @@ const Resolver = (() => {
 
 const Monitor = (() => {
 
-  const VERSION = '0.1.0'
+  const VERSION = '0.1.0';
 
   const Selectors = {
     SCROLL_MONITOR: '[data-monitor~="scroll"]'
-  }
+  };
 
   const Data = {
     MONITOR_TARGET: 'monitorTarget'
-  }
+  };
 
   const Events = {
     SCROLL: 'scroll',
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
-  }
+  };
 
-  const ValidTargetTypes = [Window, Element]
+  const ValidTargetTypes = [Window, Element];
 
-  const MonitorMap = new Map()
-  const Resolvers = new Set()
+  const MonitorMap = new Map();
+  const Resolvers = new Set();
 
   class Monitor {
     /**
@@ -83,20 +83,20 @@ const Monitor = (() => {
      * @see Monitor.of
      */
     constructor(target) {
-      target = target || window
-      Monitor._checkTarget(target)
+      target = target || window;
+      Monitor._checkTarget(target);
 
       if (MonitorMap.has(target)) {
-        MonitorMap.get(target).destroy()
+        MonitorMap.get(target).destroy();
       }
 
-      this._target = target
-      this._subscribers = new Set()
-      this._scrollMetric = Monitor._resolveMetric(target)
-      this._boundEventListener = this._onTargetScroll.bind(this)
+      this._target = target;
+      this._subscribers = new Set();
+      this._scrollMetric = Monitor._resolveMetric(target);
+      this._boundEventListener = this._onTargetScroll.bind(this);
 
-      this._target.addEventListener(Events.SCROLL, this._boundEventListener)
-      MonitorMap.set(target, this)
+      this._target.addEventListener(Events.SCROLL, this._boundEventListener);
+      MonitorMap.set(target, this);
     }
 
     // Static
@@ -130,7 +130,7 @@ const Monitor = (() => {
      * @return {Monitor}
      */
     static of(target) {
-      Monitor._checkTarget(target)
+      Monitor._checkTarget(target);
       if (MonitorMap.has(target)) {
         return MonitorMap.get(target)
       } else {
@@ -144,8 +144,8 @@ const Monitor = (() => {
      * @throws when resolver is not valid
      */
     static registerResolver(resolver) {
-      this._checkResolver(resolver)
-      Resolvers.add(resolver)
+      this._checkResolver(resolver);
+      Resolvers.add(resolver);
     }
 
     /**
@@ -153,15 +153,15 @@ const Monitor = (() => {
      * @param resolver the resolver should be unregistered
      */
     static unregisterResolver(resolver) {
-      Resolvers.delete(resolver)
+      Resolvers.delete(resolver);
     }
 
     /**
      * Destroy all managed Monitors and unregister all Resolvers
      */
     static reset() {
-      MonitorMap.forEach(monitor => monitor.destroy())
-      Resolvers.clear()
+      MonitorMap.forEach(monitor => monitor.destroy());
+      Resolvers.clear();
     }
 
     /**
@@ -170,25 +170,25 @@ const Monitor = (() => {
      */
     static _initByData() {
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
-        const targetData = subscriber.dataset[Data.MONITOR_TARGET]
+        const targetData = subscriber.dataset[Data.MONITOR_TARGET];
         if (targetData) {
           for (const target of document.querySelectorAll(targetData)) {
-            Monitor.of(target).subscribe(subscriber)
+            Monitor.of(target).subscribe(subscriber);
           }
         } else {
-          Monitor.of(window).subscribe(subscriber)
+          Monitor.of(window).subscribe(subscriber);
         }
       }
     }
 
     static _resolveMetric(target) {
-      let metric
+      let metric;
       if (target instanceof Window) {
         metric = new ScrollMetric(target.innerHeight, target.innerWidth,
-          target.pageYOffset, target.pageXOffset)
+          target.pageYOffset, target.pageXOffset);
       } else if (target instanceof Element) {
         metric = new ScrollMetric(target.scrollHeight, target.scrollWidth,
-          target.scrollTop, target.scrollLeft)
+          target.scrollTop, target.scrollLeft);
       } else {
         throw new Error('Can not resolve ScrollMetric')
       }
@@ -224,8 +224,8 @@ const Monitor = (() => {
      * @throws when subscriber is not valid
      */
     subscribe(subscriber) {
-      Monitor._checkSubscriber(subscriber)
-      this._subscribers.add(subscriber)
+      Monitor._checkSubscriber(subscriber);
+      this._subscribers.add(subscriber);
     }
 
     /**
@@ -233,7 +233,7 @@ const Monitor = (() => {
      * @param subscriber the subscriber should be removed from the monitor
      */
     unsubscribe(subscriber) {
-      this._subscribers.delete(subscriber)
+      this._subscribers.delete(subscriber);
     }
 
     /**
@@ -241,26 +241,26 @@ const Monitor = (() => {
      * Once this method invoked, this Monitor would not be available anymore.
      */
     destroy() {
-      MonitorMap.delete(this._target)
-      this._target.removeEventListener(Events.SCROLL, this._boundEventListener)
+      MonitorMap.delete(this._target);
+      this._target.removeEventListener(Events.SCROLL, this._boundEventListener);
 
-      this._target = null
-      this._subscribers = null
-      this._scrollMetric = null
-      this._boundEventListener = null
+      this._target = null;
+      this._subscribers = null;
+      this._scrollMetric = null;
+      this._boundEventListener = null;
     }
 
     // Private
 
     _onTargetScroll(event) {
-      const lastMetric = this._scrollMetric
-      this._scrollMetric = Monitor._resolveMetric(this._target)
+      const lastMetric = this._scrollMetric;
+      this._scrollMetric = Monitor._resolveMetric(this._target);
 
       for (const resolver of Resolvers) {
-        const resolvedEvent = resolver.resolve(lastMetric, this._scrollMetric, event)
+        const resolvedEvent = resolver.resolve(lastMetric, this._scrollMetric, event);
         if (resolvedEvent && resolvedEvent instanceof Event) {
           for (const subscriber of this._subscribers) {
-            subscriber.dispatchEvent(resolvedEvent)
+            subscriber.dispatchEvent(resolvedEvent);
           }
         }
       }
@@ -270,10 +270,10 @@ const Monitor = (() => {
 
   class ScrollMetric {
     constructor(height, width, top, left) {
-      this._height = height
-      this._width = width
-      this._top = top
-      this._left = left
+      this._height = height;
+      this._width = width;
+      this._top = top;
+      this._left = left;
     }
 
     // Getter
@@ -296,11 +296,11 @@ const Monitor = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    Monitor._initByData()
-  })
+    Monitor._initByData();
+  });
 
   return Monitor
-})()
+})();
 
 /**
  * ----------------------------------------------------------------------------------
@@ -311,25 +311,25 @@ const Monitor = (() => {
 
 const ScrollUpResolver = (() => {
 
-  const VERSION = '0.1.0'
+  const VERSION = '0.1.0';
 
   const Selectors = {
     SCROLL_UP_MONITOR: '[data-monitor~="scroll-up"]'
-  }
+  };
 
   const Data = {
     TOGGLE_CLASS: 'scrollUpClass'
-  }
+  };
 
   const DataDefault = {
     TOGGLE_CLASS: 'scroll-up'
-  }
+  };
 
   const Events = {
     SCROLL_UP: `scroll.up.${Resolver.NAMESPACE}`,
     SCROLL_UP_OFF: `scroll.up.off.${Resolver.NAMESPACE}`,
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
-  }
+  };
 
   class ScrollUpResolver extends Resolver {
 
@@ -347,19 +347,19 @@ const ScrollUpResolver = (() => {
      */
     static _initByData() {
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_UP_MONITOR)) {
-        const toggleClass = subscriber.dataset[Data.TOGGLE_CLASS] || DataDefault.TOGGLE_CLASS
+        const toggleClass = subscriber.dataset[Data.TOGGLE_CLASS] || DataDefault.TOGGLE_CLASS;
         subscriber.addEventListener(Events.SCROLL_UP, () => {
-          subscriber.classList.add(toggleClass)
-        })
+          subscriber.classList.add(toggleClass);
+        });
         subscriber.addEventListener(Events.SCROLL_UP_OFF, () => {
-          subscriber.classList.remove(toggleClass)
-        })
+          subscriber.classList.remove(toggleClass);
+        });
       }
     }
 
     resolve(lastMetric, crtMetric) {
-      let lastTop = lastMetric.top
-      let crtTop = crtMetric.top
+      let lastTop = lastMetric.top;
+      let crtTop = crtMetric.top;
       if (crtTop < lastTop) {
         return new Event(Events.SCROLL_UP)
       } else {
@@ -369,11 +369,11 @@ const ScrollUpResolver = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    Monitor.registerResolver(new ScrollUpResolver())
-    ScrollUpResolver._initByData()
-  })
+    Monitor.registerResolver(new ScrollUpResolver());
+    ScrollUpResolver._initByData();
+  });
 
   return ScrollUpResolver
-})()
+})();
 
-export {Resolver, Monitor, ScrollUpResolver as ScrollUp}
+export { Resolver, Monitor, ScrollUpResolver as ScrollUp };
