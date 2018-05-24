@@ -143,7 +143,7 @@ describe('Monitor', function () {
     })
   })
 
-  describe('static #initByData', function () {
+  describe('static #_initByData', function () {
     it('should create monitors and add subscribers to monitors by data attributes properly', function () {
       var div = document.createElement('div')
       div.dataset['monitor'] = 'scroll'
@@ -155,7 +155,7 @@ describe('Monitor', function () {
       p.dataset['monitorTarget'] = '.target'
       div.appendChild(p)
 
-      Monitor.initByData()
+      Monitor._initByData()
       expect(Monitor.monitorMap).to.have.all.keys(window, div)
       expect(Monitor.of(window)._subscribers).to.include(div)
       expect(Monitor.of(div)._subscribers).to.include(p)

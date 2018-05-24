@@ -31,17 +31,30 @@ const ScrollUpResolver = (() => {
   }
 
   class ScrollUpResolver extends Resolver {
-    // Getter
+
+    static get VERSION() {
+      return VERSION
+    }
 
     get eventTypes() {
       return [Events.SCROLL_UP, Events.SCROLL_UP_OFF]
     }
 
-    static VERSION() {
-      return VERSION
+    /**
+     * Add class toggle event listeners those respond to events of {@link ScrollUpResolver} to subscribers by data attributes.
+     * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
+     */
+    static _initByData() {
+      for (const subscriber of document.querySelectorAll(Selectors.SCROLL_UP_MONITOR)) {
+        const toggleClass = subscriber.dataset[Data.TOGGLE_CLASS] || DataDefault.TOGGLE_CLASS
+        subscriber.addEventListener(Events.SCROLL_UP, () => {
+          subscriber.classList.add(toggleClass)
+        })
+        subscriber.addEventListener(Events.SCROLL_UP_OFF, () => {
+          subscriber.classList.remove(toggleClass)
+        })
+      }
     }
-
-    // Public
 
     resolve(lastMetric, crtMetric) {
       let lastTop = lastMetric.top
@@ -56,15 +69,7 @@ const ScrollUpResolver = (() => {
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
     Monitor.registerResolver(new ScrollUpResolver())
-    for (const subscriber of document.querySelectorAll(Selectors.SCROLL_UP_MONITOR)) {
-      const toggleClass = subscriber.dataset[Data.TOGGLE_CLASS] || DataDefault.TOGGLE_CLASS
-      subscriber.addEventListener(Events.SCROLL_UP, () => {
-        subscriber.classList.add(toggleClass)
-      })
-      subscriber.addEventListener(Events.SCROLL_UP_OFF, () => {
-        subscriber.classList.remove(toggleClass)
-      })
-    }
+    ScrollUpResolver._initByData()
   })
 
   return ScrollUpResolver

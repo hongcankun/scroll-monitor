@@ -120,9 +120,10 @@ const Monitor = (() => {
     }
 
     /**
-     * Create monitors and add subscribers to monitors by data attributes
+     * Create monitors and add subscribers to monitors by data attributes.
+     * This function can be invoked repeatedly safely, subscribers will not be registered repeatedly.
      */
-    static initByData() {
+    static _initByData() {
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
         const targetData = subscriber.dataset[Data.MONITOR_TARGET]
         if (targetData) {
@@ -250,7 +251,7 @@ const Monitor = (() => {
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    Monitor.initByData()
+    Monitor._initByData()
   })
 
   return Monitor
