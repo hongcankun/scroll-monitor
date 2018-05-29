@@ -6,6 +6,7 @@ This is a JavaScript plugin that monitors and responds to scroll event, and supp
 
 ## Browser support
 [![BrowserStack Logo](./assert/browserstack-logo.png)](http://browserstack.com/)
+
 [BrowserStack](https://www.browserstack.com/) is a cross browser and real device web-based testing platform. BrowserStack can be used for interactive as well as automated testing through frameworks like Selenium, Karma and others.
 
 This plugin is tested on multiple platforms and browsers under supports of [BrowserStack](https://www.browserstack.com/):
