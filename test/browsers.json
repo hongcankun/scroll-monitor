@@ -71,15 +71,6 @@
     "browser_version": "11.1",
     "real_mobile": null
   },
-  "bs-ios11-iphone": {
-    "base": "BrowserStack",
-    "os": "ios",
-    "os_version": "11.0",
-    "browser": "iphone",
-    "device": "iPhone 8",
-    "browser_version": null,
-    "real_mobile": true
-  },
   "bs-android-8": {
     "base": "BrowserStack",
     "os": "android",
