@@ -213,7 +213,7 @@ describe('Monitor', function () {
 
     it('should not throw error when subscriber is an instance of EventTarget', function () {
       expect(function () {
-        Monitor._checkSubscriber(new EventTarget())
+        Monitor._checkSubscriber(document.body)
       }).to.not.throw()
     })
   })
@@ -270,14 +270,14 @@ describe('Monitor', function () {
     })
 
     it('should add a subscriber when subscriber is valid', function () {
-      var subscriber = new EventTarget()
+      var subscriber = document.body
       var monitor = Monitor.of(window)
       monitor.subscribe(subscriber)
       expect(monitor._subscribers).to.include(subscriber).and.have.property('size', 1)
     })
 
     it('should make no sense when the subscriber to be add has been registered', function () {
-      var subscriber = new EventTarget()
+      var subscriber = document.body
       var monitor = Monitor.of(window)
       monitor.subscribe(subscriber)
       expect(monitor._subscribers).to.include(subscriber).and.have.property('size', 1)
@@ -289,7 +289,7 @@ describe('Monitor', function () {
 
   describe('#unsubscribe', function () {
     it('should remove a subscriber when it exist', function () {
-      var subscriber = new EventTarget()
+      var subscriber = document.body
       var monitor = Monitor.of(window)
       monitor.subscribe(subscriber)
       monitor.unsubscribe(subscriber)
@@ -298,9 +298,9 @@ describe('Monitor', function () {
 
     it('should make no sense when the subscriber not exist', function () {
       var monitor = Monitor.of(window)
-      monitor.subscribe(new EventTarget())
+      monitor.subscribe(document.body)
 
-      var subscriberToBeDeleted = new EventTarget()
+      var subscriberToBeDeleted = window
       monitor.unsubscribe(subscriberToBeDeleted)
       expect(monitor._subscribers).to.not.be.empty
     })
@@ -331,7 +331,7 @@ describe('Monitor', function () {
         return this.count % 2 === 0 ? new Event('test') : null
       }
 
-      var subscriber = new EventTarget()
+      var subscriber = document.body
       subscriber.count = 0
       subscriber.addEventListener('test', function () {
         this.count++
