@@ -205,8 +205,9 @@ const Monitor = (() => {
     }
 
     static _checkSubscriber(subscriber) {
-      if (!(subscriber instanceof EventTarget)) {
-        throw new Error('The subscriber must be an instance of EventTarget!')
+      const requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent'];
+      if (!(requiredFunctions.every(requiredFunc => subscriber[requiredFunc] instanceof Function))) {
+        throw new Error(`The subscriber must have functions ${requiredFunctions}!`)
       }
     }
 
@@ -341,6 +342,16 @@ const ScrollUpResolver = (() => {
       return [Events.SCROLL_UP, Events.SCROLL_UP_OFF]
     }
 
+    static _createEvent(type) {
+      if (document.documentMode) { // if IE
+        const event = document.createEvent('Event');
+        event.initEvent(type, false, false);
+        return event
+      } else {
+        return new Event(type)
+      }
+    }
+
     /**
      * Add class toggle event listeners those respond to events of {@link ScrollUpResolver} to subscribers by data attributes.
      * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
@@ -361,9 +372,9 @@ const ScrollUpResolver = (() => {
       let lastTop = lastMetric.top;
       let crtTop = crtMetric.top;
       if (crtTop < lastTop) {
-        return new Event(Events.SCROLL_UP)
+        return ScrollUpResolver._createEvent(Events.SCROLL_UP)
       } else {
-        return new Event(Events.SCROLL_UP_OFF)
+        return ScrollUpResolver._createEvent(Events.SCROLL_UP_OFF)
       }
     }
   }

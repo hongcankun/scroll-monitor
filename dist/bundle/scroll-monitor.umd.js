@@ -433,8 +433,12 @@
       }, {
         key: "_checkSubscriber",
         value: function _checkSubscriber(subscriber) {
-          if (!(subscriber instanceof EventTarget)) {
-            throw new Error('The subscriber must be an instance of EventTarget!');
+          var requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent'];
+
+          if (!requiredFunctions.every(function (requiredFunc) {
+            return subscriber[requiredFunc] instanceof Function;
+          })) {
+            throw new Error("The subscriber must have functions ".concat(requiredFunctions, "!"));
           }
         }
       }, {
@@ -558,9 +562,9 @@
           var crtTop = crtMetric.top;
 
           if (crtTop < lastTop) {
-            return new Event(Events.SCROLL_UP);
+            return ScrollUpResolver._createEvent(Events.SCROLL_UP);
           } else {
-            return new Event(Events.SCROLL_UP_OFF);
+            return ScrollUpResolver._createEvent(Events.SCROLL_UP_OFF);
           }
         }
       }, {
@@ -568,12 +572,24 @@
         get: function get() {
           return [Events.SCROLL_UP, Events.SCROLL_UP_OFF];
         }
+      }], [{
+        key: "_createEvent",
+        value: function _createEvent(type) {
+          if (document.documentMode) {
+            // if IE
+            var event = document.createEvent('Event');
+            event.initEvent(type, false, false);
+            return event;
+          } else {
+            return new Event(type);
+          }
+        }
         /**
          * Add class toggle event listeners those respond to events of {@link ScrollUpResolver} to subscribers by data attributes.
          * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
          */
 
-      }], [{
+      }, {
         key: "_initByData",
         value: function _initByData() {
           var _iteratorNormalCompletion = true;

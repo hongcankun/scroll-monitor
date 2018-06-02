@@ -160,8 +160,9 @@ const Monitor = (() => {
     }
 
     static _checkSubscriber(subscriber) {
-      if (!(subscriber instanceof EventTarget)) {
-        throw new Error('The subscriber must be an instance of EventTarget!')
+      const requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent']
+      if (!(requiredFunctions.every(requiredFunc => subscriber[requiredFunc] instanceof Function))) {
+        throw new Error(`The subscriber must have functions ${requiredFunctions}!`)
       }
     }
 
