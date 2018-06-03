@@ -7,7 +7,7 @@ describe('Util', function () {
       expect(event).to.have.property('type').that.equals('test')
       expect(event).to.have.property('bubbles').that.is.false
       expect(event).to.have.property('cancelable').that.is.false
-      if (!document.documentMode) {
+      if (!(document.documentMode || window.StyleMedia)) {
         expect(event).to.have.property('composed').that.is.false
       }
     })
@@ -17,7 +17,7 @@ describe('Util', function () {
       expect(event).to.have.property('type').that.equals('test')
       expect(event).to.have.property('bubbles').that.is.true
       expect(event).to.have.property('cancelable').that.is.true
-      if (!document.documentMode) {
+      if (!(document.documentMode || window.StyleMedia)) {
         expect(event).to.have.property('composed').that.is.true
       }
     })
