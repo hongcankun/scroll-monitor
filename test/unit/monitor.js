@@ -1,3 +1,4 @@
+var Util = window.Util || window.scrollMonitor.Util
 var Resolver = window.Resolver || window.scrollMonitor.Resolver
 var Monitor = window.Monitor || window.scrollMonitor.Monitor
 
@@ -239,7 +240,7 @@ describe('Monitor', function () {
       expect(Monitor.monitorMap).to.include(monitor)
 
       monitor._scrollMetric._top = 100
-      window.dispatchEvent(new Event('scroll'))
+      window.dispatchEvent(Util.createEvent('scroll'))
       expect(monitor._scrollMetric).to.have.property('top', 0)
     })
 
@@ -317,7 +318,7 @@ describe('Monitor', function () {
       expect(monitor).to.have.property('_scrollMetric').that.is.null
       expect(monitor).to.have.property('_boundEventListener').that.is.null
 
-      window.dispatchEvent(new Event('scroll'))
+      window.dispatchEvent(Util.createEvent('scroll'))
       expect(monitor).to.have.property('_scrollMetric').that.is.null
     })
   })
@@ -328,7 +329,7 @@ describe('Monitor', function () {
       resolver.count = 0
       resolver.resolve = function () {
         this.count++
-        return this.count % 2 === 0 ? new Event('test') : null
+        return this.count % 2 === 0 ? Util.createEvent('test') : null
       }
 
       var subscriber = document.body
@@ -343,8 +344,8 @@ describe('Monitor', function () {
       monitor.subscribe(subscriber)
       monitor._scrollMetric._top = 100
 
-      window.dispatchEvent(new Event('scroll'))
-      window.dispatchEvent(new Event('scroll'))
+      window.dispatchEvent(Util.createEvent('scroll'))
+      window.dispatchEvent(Util.createEvent('scroll'))
       expect(monitor).to.have.property('_scrollMetric').that.has.property('top', 0)
       expect(resolver).to.have.property('count', 2)
       expect(subscriber).to.have.property('count', 1)

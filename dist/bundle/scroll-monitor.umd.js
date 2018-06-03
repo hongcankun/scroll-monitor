@@ -9,6 +9,29 @@
   (factory((global.scrollMonitor = {})));
 }(this, (function (exports) { 'use strict';
 
+  var Util = function () {
+    var Util = {
+      createEvent: function createEvent(type, options) {
+        var defaultOptions = {
+          bubbles: false,
+          cancelable: false,
+          composed: false
+        };
+        options = Object.assign(defaultOptions, options);
+
+        if (document.documentMode) {
+          // if IE
+          var event = document.createEvent('Event');
+          event.initEvent(type, options.bubbles, options.cancelable);
+          return event;
+        } else {
+          return new Event(type, options);
+        }
+      }
+    };
+    return Util;
+  }();
+
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -562,9 +585,9 @@
           var crtTop = crtMetric.top;
 
           if (crtTop < lastTop) {
-            return ScrollUpResolver._createEvent(Events.SCROLL_UP);
+            return Util.createEvent(Events.SCROLL_UP);
           } else {
-            return ScrollUpResolver._createEvent(Events.SCROLL_UP_OFF);
+            return Util.createEvent(Events.SCROLL_UP_OFF);
           }
         }
       }, {
@@ -572,24 +595,12 @@
         get: function get() {
           return [Events.SCROLL_UP, Events.SCROLL_UP_OFF];
         }
-      }], [{
-        key: "_createEvent",
-        value: function _createEvent(type) {
-          if (document.documentMode) {
-            // if IE
-            var event = document.createEvent('Event');
-            event.initEvent(type, false, false);
-            return event;
-          } else {
-            return new Event(type);
-          }
-        }
         /**
          * Add class toggle event listeners those respond to events of {@link ScrollUpResolver} to subscribers by data attributes.
          * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
          */
 
-      }, {
+      }], [{
         key: "_initByData",
         value: function _initByData() {
           var _iteratorNormalCompletion = true;
@@ -646,6 +657,7 @@
     return ScrollUpResolver;
   }();
 
+  exports.Util = Util;
   exports.Resolver = Resolver;
   exports.Monitor = Monitor;
   exports.ScrollUp = ScrollUpResolver;

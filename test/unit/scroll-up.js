@@ -1,3 +1,4 @@
+var Util = window.Util || window.scrollMonitor.Util
 var ScrollUp = window.ScrollUpResolver || window.scrollMonitor.ScrollUp
 
 describe('ScrollUp', function () {
@@ -25,10 +26,10 @@ describe('ScrollUp', function () {
 
       ScrollUp._initByData()
 
-      subscriber.dispatchEvent(new Event('scroll.up.scroll-monitor'))
+      subscriber.dispatchEvent(Util.createEvent('scroll.up.scroll-monitor'))
       expect(subscriber.classList.contains('scroll-up')).to.be.true
 
-      subscriber.dispatchEvent(new Event('scroll.up.off.scroll-monitor'))
+      subscriber.dispatchEvent(Util.createEvent('scroll.up.off.scroll-monitor'))
       expect(subscriber.classList.contains('scroll-up')).to.be.false
     })
 
@@ -40,10 +41,10 @@ describe('ScrollUp', function () {
 
       ScrollUp._initByData()
 
-      subscriber.dispatchEvent(new Event('scroll.up.scroll-monitor'))
+      subscriber.dispatchEvent(Util.createEvent('scroll.up.scroll-monitor'))
       expect(subscriber.classList.contains('active')).to.be.true
 
-      subscriber.dispatchEvent(new Event('scroll.up.off.scroll-monitor'))
+      subscriber.dispatchEvent(Util.createEvent('scroll.up.off.scroll-monitor'))
       expect(subscriber.classList.contains('active')).to.be.false
     })
   })
