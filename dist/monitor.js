@@ -303,12 +303,8 @@ var Monitor = function () {
     }, {
       key: "_checkSubscriber",
       value: function _checkSubscriber(subscriber) {
-        var requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent'];
-
-        if (!requiredFunctions.every(function (requiredFunc) {
-          return subscriber[requiredFunc] instanceof Function;
-        })) {
-          throw new Error("The subscriber must have functions ".concat(requiredFunctions, "!"));
+        if (!(subscriber instanceof EventTarget)) {
+          throw new Error('The subscriber must be an instance of EventTarget!');
         }
       }
     }, {

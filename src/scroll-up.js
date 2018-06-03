@@ -1,4 +1,3 @@
-import Util from './util'
 import Resolver from './resolver'
 import Monitor from './monitor'
 
@@ -61,9 +60,9 @@ const ScrollUpResolver = (() => {
       let lastTop = lastMetric.top
       let crtTop = crtMetric.top
       if (crtTop < lastTop) {
-        return Util.createEvent(Events.SCROLL_UP)
+        return new Event(Events.SCROLL_UP)
       } else {
-        return Util.createEvent(Events.SCROLL_UP_OFF)
+        return new Event(Events.SCROLL_UP_OFF)
       }
     }
   }

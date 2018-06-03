@@ -18,4 +18,3 @@ This plugin is tested on multiple platforms and browsers under supports of [Brow
 * Firefox
 * Safari
 * Microsoft Edge
-* IE 11(need polyfill)

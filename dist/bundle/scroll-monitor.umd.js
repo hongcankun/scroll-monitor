@@ -9,29 +9,6 @@
   (factory((global.scrollMonitor = {})));
 }(this, (function (exports) { 'use strict';
 
-  var Util = function () {
-    var Util = {
-      createEvent: function createEvent(type, options) {
-        var defaultOptions = {
-          bubbles: false,
-          cancelable: false,
-          composed: false
-        };
-        options = Object.assign(defaultOptions, options);
-
-        if (document.documentMode) {
-          // if IE
-          var event = document.createEvent('Event');
-          event.initEvent(type, options.bubbles, options.cancelable);
-          return event;
-        } else {
-          return new Event(type, options);
-        }
-      }
-    };
-    return Util;
-  }();
-
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -456,12 +433,8 @@
       }, {
         key: "_checkSubscriber",
         value: function _checkSubscriber(subscriber) {
-          var requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent'];
-
-          if (!requiredFunctions.every(function (requiredFunc) {
-            return subscriber[requiredFunc] instanceof Function;
-          })) {
-            throw new Error("The subscriber must have functions ".concat(requiredFunctions, "!"));
+          if (!(subscriber instanceof EventTarget)) {
+            throw new Error('The subscriber must be an instance of EventTarget!');
           }
         }
       }, {
@@ -585,9 +558,9 @@
           var crtTop = crtMetric.top;
 
           if (crtTop < lastTop) {
-            return Util.createEvent(Events.SCROLL_UP);
+            return new Event(Events.SCROLL_UP);
           } else {
-            return Util.createEvent(Events.SCROLL_UP_OFF);
+            return new Event(Events.SCROLL_UP_OFF);
           }
         }
       }, {
@@ -657,7 +630,6 @@
     return ScrollUpResolver;
   }();
 
-  exports.Util = Util;
   exports.Resolver = Resolver;
   exports.Monitor = Monitor;
   exports.ScrollUp = ScrollUpResolver;

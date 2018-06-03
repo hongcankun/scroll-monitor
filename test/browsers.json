@@ -1,0 +1,65 @@
+{
+  "bs-windows10-chrome": {
+    "base": "BrowserStack",
+    "os": "Windows",
+    "os_version": "10",
+    "browser": "chrome",
+    "device": null,
+    "browser_version": "latest",
+    "real_mobile": null
+  },
+  "bs-windows10-firefox": {
+    "base": "BrowserStack",
+    "os": "Windows",
+    "os_version": "10",
+    "browser": "firefox",
+    "device": null,
+    "browser_version": "latest",
+    "real_mobile": null
+  },
+  "bs-windows10-edge": {
+    "base": "BrowserStack",
+    "os": "Windows",
+    "os_version": "10",
+    "browser": "edge",
+    "device": null,
+    "browser_version": "latest",
+    "real_mobile": null
+  },
+  "bs-osx11-chrome": {
+    "base": "BrowserStack",
+    "os": "OS X",
+    "os_version": "High Sierra",
+    "browser": "chrome",
+    "device": null,
+    "browser_version": "latest",
+    "real_mobile": null
+  },
+  "bs-osx11-firefox": {
+    "base": "BrowserStack",
+    "os": "OS X",
+    "os_version": "High Sierra",
+    "browser": "firefox",
+    "device": null,
+    "browser_version": "latest",
+    "real_mobile": null
+  },
+  "bs-osx11-safari": {
+    "base": "BrowserStack",
+    "os": "OS X",
+    "os_version": "High Sierra",
+    "browser": "safari",
+    "device": null,
+    "browser_version": "11.1",
+    "real_mobile": null
+  },
+  "bs-android-8": {
+    "base": "BrowserStack",
+    "os": "android",
+    "os_version": "8.0",
+    "browser": "android",
+    "device": "Google Pixel",
+    "browser_version": null,
+    "real_mobile": true
+  }
+}

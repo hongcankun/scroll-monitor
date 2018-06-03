@@ -1,21 +1,3 @@
-const Util = (() => {
-  const Util = {
-    createEvent(type, options) {
-      const defaultOptions = {bubbles: false, cancelable: false, composed: false};
-      options = Object.assign(defaultOptions, options);
-      if (document.documentMode) { // if IE
-        const event = document.createEvent('Event');
-        event.initEvent(type, options.bubbles, options.cancelable);
-        return event
-      } else {
-        return new Event(type, options)
-      }
-    }
-  };
-
-  return Util
-})();
-
 /**
  * ----------------------------------------------------------------------------------
  * ScrollMonitor (v0.1.0): resolver.js
@@ -223,9 +205,8 @@ const Monitor = (() => {
     }
 
     static _checkSubscriber(subscriber) {
-      const requiredFunctions = ['addEventListener', 'removeEventListener', 'dispatchEvent'];
-      if (!(requiredFunctions.every(requiredFunc => subscriber[requiredFunc] instanceof Function))) {
-        throw new Error(`The subscriber must have functions ${requiredFunctions}!`)
+      if (!(subscriber instanceof EventTarget)) {
+        throw new Error('The subscriber must be an instance of EventTarget!')
       }
     }
 
@@ -380,9 +361,9 @@ const ScrollUpResolver = (() => {
       let lastTop = lastMetric.top;
       let crtTop = crtMetric.top;
       if (crtTop < lastTop) {
-        return Util.createEvent(Events.SCROLL_UP)
+        return new Event(Events.SCROLL_UP)
       } else {
-        return Util.createEvent(Events.SCROLL_UP_OFF)
+        return new Event(Events.SCROLL_UP_OFF)
       }
     }
   }
@@ -395,4 +376,4 @@ const ScrollUpResolver = (() => {
   return ScrollUpResolver
 })();
 
-export { Util, Resolver, Monitor, ScrollUpResolver as ScrollUp };
+export { Resolver, Monitor, ScrollUpResolver as ScrollUp };
