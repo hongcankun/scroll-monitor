@@ -11,6 +11,7 @@ module.exports = function (config) {
       'test/unit/*.js'
     ],
     reporters: ['dots', 'BrowserStack'],
+    hostname: '127.0.0.1',
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
