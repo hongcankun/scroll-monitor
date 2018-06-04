@@ -14,7 +14,7 @@
     "js-lint": "eslint src test build",
     "js-compile": "npm-run-all --parallel js-compile-*",
     "js-compile-standalone": "babel src/ --out-dir dist/ --source-maps --ignore src/index.js",
-    "js-compile-coverage": "cross-env NODE_ENV=test babel src/ --out-dir coverage/dist/ --source-maps --ignore src/index.js",
+    "js-compile-coverage": "cross-env COVERAGE=true babel src/ --out-dir coverage/dist/ --source-maps --ignore src/index.js",
     "js-compile-bundle": "cross-env BUNDLE=true rollup --config build/rollup.config.js",
     "js-minify": "node build/minify.js"
   },

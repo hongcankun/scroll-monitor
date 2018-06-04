@@ -8,11 +8,7 @@ module.exports = {
     ]
   ],
   plugins: [
-    !process.env.BUNDLE && 'transform-es2015-modules-strip'
-  ].filter(Boolean),
-  env: {
-    test: {
-      plugins: ['istanbul']
-    }
-  }
+    !process.env.BUNDLE && 'transform-es2015-modules-strip',
+    process.env.COVERAGE && 'istanbul'
+  ].filter(Boolean)
 }
