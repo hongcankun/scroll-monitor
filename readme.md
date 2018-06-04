@@ -1,6 +1,7 @@
 # scroll-monitor
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=alhUZjJoT011bjkxWURzRUcrYm5TclNRRnVVL090Ulk5ODlrczNHUjB1QT0tLWFrNW9YbkdFMEwrTlI0RkZmQ1NoV2c9PQ==--3a4c5f45c55eb7fb7e942937938a217444f5c16a)](https://www.browserstack.com/automate/public-build/alhUZjJoT011bjkxWURzRUcrYm5TclNRRnVVL090Ulk5ODlrczNHUjB1QT0tLWFrNW9YbkdFMEwrTlI0RkZmQ1NoV2c9PQ==--3a4c5f45c55eb7fb7e942937938a217444f5c16a)
 [![Build Status](https://travis-ci.org/swgrhck/scroll-monitor.svg?branch=master)](https://travis-ci.org/swgrhck/scroll-monitor)
+[![Coverage Status](https://coveralls.io/repos/github/swgrhck/scroll-monitor/badge.svg?branch=master)](https://coveralls.io/github/swgrhck/scroll-monitor?branch=master)
 
 This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.
 
