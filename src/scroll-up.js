@@ -1,4 +1,3 @@
-import Resolver from './resolver'
 import Monitor from './monitor'
 
 /**
@@ -25,12 +24,12 @@ const ScrollUpResolver = (() => {
   }
 
   const Events = {
-    SCROLL_UP: `scroll.up.${Resolver.NAMESPACE}`,
-    SCROLL_UP_OFF: `scroll.up.off.${Resolver.NAMESPACE}`,
+    SCROLL_UP: `scroll.up.${Monitor.NAMESPACE}`,
+    SCROLL_UP_OFF: `scroll.up.off.${Monitor.NAMESPACE}`,
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
   }
 
-  class ScrollUpResolver extends Resolver {
+  class ScrollUpResolver {
 
     static get VERSION() {
       return VERSION

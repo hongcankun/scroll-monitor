@@ -1,5 +1,3 @@
-import Resolver from './resolver'
-
 /**
  * ----------------------------------------------------------------------------------
  * ScrollMonitor (v0.1.0): monitor.js
@@ -10,6 +8,7 @@ import Resolver from './resolver'
 const Monitor = (() => {
 
   const VERSION = '0.1.0'
+  const EVENT_NAMESPACE = 'scroll-monitor'
 
   const Selectors = {
     SCROLL_MONITOR: '[data-monitor~="scroll"]'
@@ -58,6 +57,10 @@ const Monitor = (() => {
 
     static get VERSION() {
       return VERSION
+    }
+
+    static get NAMESPACE() {
+      return EVENT_NAMESPACE
     }
 
     /**
@@ -165,9 +168,9 @@ const Monitor = (() => {
       }
     }
 
-    static _checkResolver(eventResolver) {
-      if (!(eventResolver instanceof Resolver)) {
-        throw new Error('The resolver must be an instance of Resolver!')
+    static _checkResolver(resolver) {
+      if (typeof resolver.resolve !== 'function') {
+        throw new Error('The resolver must have function resolve!')
       }
     }
 

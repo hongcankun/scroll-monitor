@@ -1,7 +1,14 @@
-var Resolver = window.Resolver || window.scrollMonitor.Resolver
 var Monitor = window.Monitor || window.scrollMonitor.Monitor
 
 describe('Monitor', function () {
+  function Resolver() {
+  }
+
+  Resolver.prototype = {
+    resolve: function () {
+    }
+  }
+
   beforeEach('reset Monitor', function () {
     Monitor.reset()
   })
@@ -13,6 +20,12 @@ describe('Monitor', function () {
   describe('static #VERSION', function () {
     it('should return as a string', function () {
       expect(Monitor).to.have.property('VERSION').that.is.a('string')
+    })
+  })
+
+  describe('static #NAMESPACE', function () {
+    it('should return as a string', function () {
+      expect(Monitor).to.have.property('NAMESPACE').that.is.a('string')
     })
   })
 
@@ -300,8 +313,7 @@ describe('Monitor', function () {
       var monitor = Monitor.of(window)
       monitor.subscribe(document.body)
 
-      var subscriberToBeDeleted = window
-      monitor.unsubscribe(subscriberToBeDeleted)
+      monitor.unsubscribe(window)
       expect(monitor._subscribers).to.not.be.empty
     })
   })
