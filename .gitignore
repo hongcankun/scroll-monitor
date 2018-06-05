@@ -60,3 +60,6 @@ typings/
 # webstorm
 .iml
 .idea
+
+# build dist
+dist
