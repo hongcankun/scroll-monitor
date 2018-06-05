@@ -19,6 +19,11 @@
     "js-minify": "node build/minify.js",
     "release-coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
+  "files": [
+    "src/!(.babelrc).js",
+    "dist/",
+    "assert/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swgrhck/scroll-monitor.git"
