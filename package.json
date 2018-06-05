@@ -18,7 +18,7 @@
     "js-compile-bundle": "cross-env BUNDLE=true rollup --config build/rollup.config.js",
     "js-minify": "node build/minify.js",
     "js-zip": "cd dist/ && zip -r9 scroll-monitor-$npm_package_version-dist.zip *",
-    "release-coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "publish-coverage": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "files": [
     "src/!(.babelrc).js",

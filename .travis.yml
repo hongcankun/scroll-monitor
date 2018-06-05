@@ -11,7 +11,7 @@ install:
 script:
   - npm test
   - npm run js-test-cloud
-  - npm run release-coverage
+  - npm run publish-coverage
 before_deploy:
   - npm run js-zip
 deploy:
