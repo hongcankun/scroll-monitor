@@ -12,11 +12,20 @@ script:
   - npm test
   - npm run js-test-cloud
   - npm run release-coverage
+before_deploy:
+  - npm run js-zip
 deploy:
   - provider: npm
     skip_cleanup: true
     email: swgrhck@gmail.com
     api_key: $NPM_AUTH_TOKEN
+    on:
+      tags: true
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GITHUB_AUTH_TOKEN
+    file_glob: true
+    file: dist/*.zip
     on:
       tags: true
 cache:
