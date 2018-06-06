@@ -215,8 +215,8 @@ const Monitor = (() => {
       this._scrollMetric = Monitor._resolveMetric(this._target)
 
       for (const resolver of Resolvers) {
-        const resolvedEvent = resolver.resolve(lastMetric, this._scrollMetric, event)
-        if (resolvedEvent && resolvedEvent instanceof Event) {
+        const resolvedEvents = resolver.resolve(lastMetric, this._scrollMetric, event)
+        for (const resolvedEvent of resolvedEvents) {
           for (const subscriber of this._subscribers) {
             subscriber.dispatchEvent(resolvedEvent)
           }

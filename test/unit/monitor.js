@@ -340,7 +340,7 @@ describe('Monitor', function () {
       resolver.count = 0
       resolver.resolve = function () {
         this.count++
-        return this.count % 2 === 0 ? new Event('test') : null
+        return this.count % 2 === 0 ? [new Event('test')] : []
       }
 
       var subscriber = document.body

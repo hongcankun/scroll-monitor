@@ -52,10 +52,10 @@ describe('ScrollUp', function () {
     it('should return event SCROLL_UP when scroll up', function () {
       var scrollUp = new ScrollUp()
       var lastMetric = {top: 100}, crtMetric = {top: 0}
-      expect(scrollUp.resolve(lastMetric, crtMetric)).to.be.an.instanceof(Event)
+      expect(scrollUp.resolve(lastMetric, crtMetric)[0]).to.be.an.instanceof(Event)
         .and.have.property('type', 'scroll.up.scroll-monitor')
 
-      expect(scrollUp.resolve(crtMetric, lastMetric)).to.be.an.instanceof(Event)
+      expect(scrollUp.resolve(crtMetric, lastMetric)[0]).to.be.an.instanceof(Event)
         .and.have.property('type', 'scroll.up.off.scroll-monitor')
     })
   })

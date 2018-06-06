@@ -59,9 +59,9 @@ const ScrollUpResolver = (() => {
       let lastTop = lastMetric.top
       let crtTop = crtMetric.top
       if (crtTop < lastTop) {
-        return new Event(Events.SCROLL_UP)
+        return [new Event(Events.SCROLL_UP)]
       } else {
-        return new Event(Events.SCROLL_UP_OFF)
+        return [new Event(Events.SCROLL_UP_OFF)]
       }
     }
   }
