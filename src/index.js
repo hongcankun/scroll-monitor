@@ -1,6 +1,6 @@
 import Monitor from './monitor'
-import ScrollUp from './scroll-up'
+import ScrollDirectionResolver from './scroll-direction-resolver'
 
 export {
-  Monitor, ScrollUp
+  Monitor, ScrollDirectionResolver
 }

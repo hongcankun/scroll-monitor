@@ -1,0 +1,119 @@
+import Monitor from './monitor'
+
+/**
+ * ----------------------------------------------------------------------------------
+ * ScrollMonitor (v0.1.0): scroll-up.js
+ * Licensed under MIT (https://github.com/swgrhck/scroll-monitor/blob/master/LICENSE)
+ * ----------------------------------------------------------------------------------
+ */
+
+/**
+ * This resolver can recognize scroll direction of scroll events.
+ * @type {ScrollDirectionResolver}
+ */
+const ScrollDirectionResolver = (() => {
+
+  const VERSION = '0.1.0'
+
+  const Selectors = {
+    SCROLL_DIRECTION_MONITOR: '[data-monitor~="scroll-direction"]'
+  }
+
+  const Data = {
+    SCROLL_UP_CLASS: 'scrollUpClass',
+    SCROLL_DOWN_CLASS: 'scrollDownClass',
+    SCROLL_LEFT_CLASS: 'scrollLeftClass',
+    SCROLL_RIGHT_CLASS: 'scrollRightClass'
+  }
+
+  const DataDefault = {
+    SCROLL_UP_CLASS: 'scroll-up',
+    SCROLL_DOWN_CLASS: 'scroll-down',
+    SCROLL_LEFT_CLASS: 'scroll-left',
+    SCROLL_RIGHT_CLASS: 'scroll-right'
+  }
+
+  const Events = {
+    SCROLL_UP: `scroll.up.${Monitor.NAMESPACE}`,
+    SCROLL_DOWN: `scroll.down.${Monitor.NAMESPACE}`,
+    SCROLL_LEFT: `scroll.left.${Monitor.NAMESPACE}`,
+    SCROLL_RIGHT: `scroll.right.${Monitor.NAMESPACE}`,
+    DOM_CONTENT_LOADED: 'DOMContentLoaded'
+  }
+
+  class ScrollDirectionResolver {
+
+    static get VERSION() {
+      return VERSION
+    }
+
+    get eventTypes() {
+      return [Events.SCROLL_UP, Events.SCROLL_DOWN, Events.SCROLL_LEFT, Events.SCROLL_RIGHT]
+    }
+
+    /**
+     * Add class toggle event listeners those respond to events of
+     * {@link ScrollDirectionResolver} to subscribers by data attributes.
+     * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
+     */
+    static _initByData() {
+      function resetClasses(subscriber, classes) {
+        for (const classKey in classes) {
+          subscriber.classList.remove(classes[classKey])
+        }
+      }
+
+      for (const subscriber of document.querySelectorAll(Selectors.SCROLL_DIRECTION_MONITOR)) {
+        const toggleClasses = {
+          up: subscriber.dataset[Data.SCROLL_UP_CLASS] || DataDefault.SCROLL_UP_CLASS,
+          down: subscriber.dataset[Data.SCROLL_DOWN_CLASS] || DataDefault.SCROLL_DOWN_CLASS,
+          left: subscriber.dataset[Data.SCROLL_LEFT_CLASS] || DataDefault.SCROLL_LEFT_CLASS,
+          right: subscriber.dataset[Data.SCROLL_RIGHT_CLASS] || DataDefault.SCROLL_RIGHT_CLASS
+        }
+
+        subscriber.addEventListener(Events.SCROLL_UP, () => {
+          resetClasses(subscriber, toggleClasses)
+          subscriber.classList.add(toggleClasses.up)
+        })
+        subscriber.addEventListener(Events.SCROLL_DOWN, () => {
+          resetClasses(subscriber, toggleClasses)
+          subscriber.classList.add(toggleClasses.down)
+        })
+        subscriber.addEventListener(Events.SCROLL_LEFT, () => {
+          resetClasses(subscriber, toggleClasses)
+          subscriber.classList.add(toggleClasses.left)
+        })
+        subscriber.addEventListener(Events.SCROLL_RIGHT, () => {
+          resetClasses(subscriber, toggleClasses)
+          subscriber.classList.add(toggleClasses.right)
+        })
+      }
+    }
+
+    resolve(lastMetric, crtMetric) {
+      const events = []
+      if (crtMetric.top < lastMetric.top) {
+        events.push(new Event(Events.SCROLL_UP))
+      }
+      if (crtMetric.top > lastMetric.top) {
+        events.push(new Event(Events.SCROLL_DOWN))
+      }
+      if (crtMetric.left < lastMetric.left) {
+        events.push(new Event(Events.SCROLL_LEFT))
+      }
+      if (crtMetric.left > lastMetric.left) {
+        events.push(new Event(Events.SCROLL_RIGHT))
+      }
+      return events
+    }
+  }
+
+  window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
+    Monitor.registerResolver(new ScrollDirectionResolver())
+    ScrollDirectionResolver._initByData()
+  })
+
+  return ScrollDirectionResolver
+})()
+
+export default ScrollDirectionResolver
