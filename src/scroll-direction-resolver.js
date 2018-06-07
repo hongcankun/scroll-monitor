@@ -57,12 +57,6 @@ const ScrollDirectionResolver = (() => {
      * This function can NOT be invoked repeatedly safely, event listeners will be registered repeatedly.
      */
     static _initByData() {
-      function resetClasses(subscriber, classes) {
-        for (const classKey in classes) {
-          subscriber.classList.remove(classes[classKey])
-        }
-      }
-
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_DIRECTION_MONITOR)) {
         const toggleClasses = {
           up: subscriber.dataset[Data.SCROLL_UP_CLASS] || DataDefault.SCROLL_UP_CLASS,
@@ -72,20 +66,20 @@ const ScrollDirectionResolver = (() => {
         }
 
         subscriber.addEventListener(Events.SCROLL_UP, () => {
-          resetClasses(subscriber, toggleClasses)
           subscriber.classList.add(toggleClasses.up)
+          subscriber.classList.remove(toggleClasses.down)
         })
         subscriber.addEventListener(Events.SCROLL_DOWN, () => {
-          resetClasses(subscriber, toggleClasses)
           subscriber.classList.add(toggleClasses.down)
+          subscriber.classList.remove(toggleClasses.up)
         })
         subscriber.addEventListener(Events.SCROLL_LEFT, () => {
-          resetClasses(subscriber, toggleClasses)
           subscriber.classList.add(toggleClasses.left)
+          subscriber.classList.remove(toggleClasses.right)
         })
         subscriber.addEventListener(Events.SCROLL_RIGHT, () => {
-          resetClasses(subscriber, toggleClasses)
           subscriber.classList.add(toggleClasses.right)
+          subscriber.classList.remove(toggleClasses.left)
         })
       }
     }
