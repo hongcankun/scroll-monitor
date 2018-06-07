@@ -157,3 +157,7 @@ This plugin is tested on multiple platforms and browsers under supports of [Brow
 * Firefox
 * Safari
 * Microsoft Edge
+
+## License
+
+The plugin is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
