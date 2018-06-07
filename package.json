@@ -1,6 +1,6 @@
 {
   "name": "@swgrhck/scroll-monitor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.",
   "module": "dist/bundle/scroll-monitor.esm.js",
   "browser": "dist/bundle/scroll-monitor.umd.js",
