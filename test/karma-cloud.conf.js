@@ -11,7 +11,7 @@ module.exports = function (config) {
       'test/unit/*.js'
     ],
     reporters: ['dots', 'BrowserStack'],
-    hostname: 'http://bs-local.com',
+    hostname: 'bs-local.com',
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
