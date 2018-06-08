@@ -2,7 +2,7 @@ import Monitor from './monitor'
 
 /**
  * ----------------------------------------------------------------------------------
- * ScrollMonitor (v0.1.0): scroll-up.js
+ * ScrollMonitor: scroll-up.js
  * Licensed under MIT (https://github.com/swgrhck/scroll-monitor/blob/master/LICENSE)
  * ----------------------------------------------------------------------------------
  */
@@ -12,8 +12,6 @@ import Monitor from './monitor'
  * @type {ScrollDirectionResolver}
  */
 const ScrollDirectionResolver = (() => {
-
-  const VERSION = '0.1.0'
 
   const Selectors = {
     SCROLL_DIRECTION_MONITOR: '[data-monitor~="scroll-direction"]'
@@ -41,10 +39,21 @@ const ScrollDirectionResolver = (() => {
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
   }
 
+  const DEFAULT_INTERVAL = 50
+
   class ScrollDirectionResolver {
 
-    static get VERSION() {
-      return VERSION
+    constructor(interval) {
+      this._interval = interval !== undefined ? interval : DEFAULT_INTERVAL
+      this._ticking = false
+    }
+
+    get interval() {
+      return this._interval
+    }
+
+    set interval(value) {
+      this._interval = value
     }
 
     get eventTypes() {
@@ -86,18 +95,25 @@ const ScrollDirectionResolver = (() => {
 
     resolve(lastMetric, crtMetric) {
       const events = []
-      if (crtMetric.top < lastMetric.top) {
-        events.push(new Event(Events.SCROLL_UP))
+
+      if (!this._ticking) {
+        this._ticking = true
+        setTimeout(() => this._ticking = false, this._interval)
+
+        if (crtMetric.top < lastMetric.top) {
+          events.push(new Event(Events.SCROLL_UP))
+        }
+        if (crtMetric.top > lastMetric.top) {
+          events.push(new Event(Events.SCROLL_DOWN))
+        }
+        if (crtMetric.left < lastMetric.left) {
+          events.push(new Event(Events.SCROLL_LEFT))
+        }
+        if (crtMetric.left > lastMetric.left) {
+          events.push(new Event(Events.SCROLL_RIGHT))
+        }
       }
-      if (crtMetric.top > lastMetric.top) {
-        events.push(new Event(Events.SCROLL_DOWN))
-      }
-      if (crtMetric.left < lastMetric.left) {
-        events.push(new Event(Events.SCROLL_LEFT))
-      }
-      if (crtMetric.left > lastMetric.left) {
-        events.push(new Event(Events.SCROLL_RIGHT))
-      }
+
       return events
     }
   }

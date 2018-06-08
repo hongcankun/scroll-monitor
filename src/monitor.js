@@ -1,13 +1,12 @@
 /**
  * ----------------------------------------------------------------------------------
- * ScrollMonitor (v0.1.0): monitor.js
+ * ScrollMonitor: monitor.js
  * Licensed under MIT (https://github.com/swgrhck/scroll-monitor/blob/master/LICENSE)
  * ----------------------------------------------------------------------------------
  */
 
 const Monitor = (() => {
 
-  const VERSION = '0.1.0'
   const EVENT_NAMESPACE = 'scroll-monitor'
 
   const Selectors = {
@@ -54,10 +53,6 @@ const Monitor = (() => {
     }
 
     // Static
-
-    static get VERSION() {
-      return VERSION
-    }
 
     static get NAMESPACE() {
       return EVENT_NAMESPACE

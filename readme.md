@@ -105,6 +105,8 @@ window.addEventListener('scroll.up.scroll-monitor', event => {
 })
 ```
 
+Since `scroll` events can fire at a high rate, so `ScrollDirectionResolver` have a time interval to recognize direction, which default to `50ms`. You can get or set interval by `resolver.inteval`, or set `interval` when creating resolver by `new ScrollDirectionResolver(inteval)`.
+
 ## Extend ScrollMonitor
 
 The `ScrollMonitor` is flexible and pluggable, this means you can extend `ScrollMonitor` easily if present components can't satisfy your needs.

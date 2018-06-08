@@ -17,12 +17,6 @@ describe('Monitor', function () {
     expect(Monitor).to.be.a('function')
   })
 
-  describe('static #VERSION', function () {
-    it('should return as a string', function () {
-      expect(Monitor).to.have.property('VERSION').that.is.a('string')
-    })
-  })
-
   describe('static #NAMESPACE', function () {
     it('should return as a string', function () {
       expect(Monitor).to.have.property('NAMESPACE').that.is.a('string')
