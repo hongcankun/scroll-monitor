@@ -28,7 +28,7 @@ describe('ScrollDirectionResolver', function () {
   })
 
   describe('static #_initByData', function () {
-    it('should register listeners to subscribers to toggle default classes when toggle classes data is not defined', function () {
+    it('should register listeners to do nothing when toggle classes data is not defined', function () {
       var subscriber = document.createElement('p')
       subscriber.dataset['monitor'] = 'scroll-direction and something else'
       document.body.appendChild(subscriber)
@@ -36,37 +36,39 @@ describe('ScrollDirectionResolver', function () {
       ScrollDirectionResolver._initByData()
 
       subscriber.dispatchEvent(new Event('scroll.up.scroll-monitor'))
-      expect(subscriber.classList.contains('scroll-up')).to.be.true
+      expect(subscriber.classList).to.have.lengthOf(0)
 
       subscriber.dispatchEvent(new Event('scroll.down.scroll-monitor'))
-      expect(subscriber.classList.contains('scroll-down')).to.be.true
+      expect(subscriber.classList).to.have.lengthOf(0)
 
       subscriber.dispatchEvent(new Event('scroll.left.scroll-monitor'))
-      expect(subscriber.classList.contains('scroll-left')).to.be.true
+      expect(subscriber.classList).to.have.lengthOf(0)
 
       subscriber.dispatchEvent(new Event('scroll.right.scroll-monitor'))
-      expect(subscriber.classList.contains('scroll-right')).to.be.true
+      expect(subscriber.classList).to.have.lengthOf(0)
     })
 
     it('should register listener to subscribers to toggle defined classes as specified by data', function () {
       var subscriber = document.createElement('p')
       subscriber.dataset['monitor'] = 'scroll-direction and something else'
-      subscriber.dataset['scrollUpClass'] = 'up'
-      subscriber.dataset['scrollDownClass'] = 'down'
-      subscriber.dataset['scrollLeftClass'] = 'left'
-      subscriber.dataset['scrollRightClass'] = 'right'
+      subscriber.dataset['scrollUpClasses'] = 'up up2'
+      subscriber.dataset['scrollDownClasses'] = '  down  '
+      subscriber.dataset['scrollLeftClasses'] = '  left  left2  '
+      subscriber.dataset['scrollRightClasses'] = 'right'
       document.body.appendChild(subscriber)
 
       ScrollDirectionResolver._initByData()
 
       subscriber.dispatchEvent(new Event('scroll.up.scroll-monitor'))
       expect(subscriber.classList.contains('up')).to.be.true
+      expect(subscriber.classList.contains('up2')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.down.scroll-monitor'))
       expect(subscriber.classList.contains('down')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.left.scroll-monitor'))
       expect(subscriber.classList.contains('left')).to.be.true
+      expect(subscriber.classList.contains('left2')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.right.scroll-monitor'))
       expect(subscriber.classList.contains('right')).to.be.true
