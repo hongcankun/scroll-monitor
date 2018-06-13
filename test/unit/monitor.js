@@ -269,6 +269,72 @@ describe('Monitor', function () {
     })
   })
 
+  describe('#target', function () {
+    it('should return the target of the monitor which is read-only', function () {
+      var monitor = Monitor.of(window)
+      expect(monitor.target).to.be.equal(window)
+
+      monitor.target = null
+      expect(monitor.target).to.be.equal(window)
+    })
+  })
+
+  describe('#target', function () {
+    it('should return the subscribers of the monitor', function () {
+      var monitor = Monitor.of(window)
+      expect(monitor.subscribers).to.be.empty
+
+      monitor.subscribe(window)
+      expect(monitor.subscribers).to.have.key(window)
+    })
+  })
+
+  describe('#resolvers', function () {
+    it('should a copy of Monitor\'s own resolvers', function () {
+      var monitor = Monitor.of(window)
+      expect(monitor.resolvers).to.be.empty
+
+      var resolver = new Resolver()
+      Monitor.registerResolver(resolver)
+      expect(monitor.resolvers).to.be.empty
+
+      monitor.registerResolver(resolver)
+      expect(monitor.resolvers).to.have.key(resolver)
+
+      monitor.resolvers.delete(resolver)
+      expect(monitor.resolvers).to.have.key(resolver)
+    })
+  })
+
+  describe('#registerResolver', function () {
+    it('should register resolver successfully when resolver is valid', function () {
+      var resolver = new Resolver()
+      var monitor = Monitor.of(window)
+      monitor.registerResolver(resolver)
+      expect(monitor.resolvers).to.have.key(resolver)
+    })
+
+    it('should throw error when resolver is invalid', function () {
+      expect(function () {
+        Monitor.of(window).registerResolver(Monitor)
+      }).to.throw
+    })
+  })
+
+  describe('#unregisterResolver', function () {
+    it('should unregister resolver properly', function () {
+      var resolver = new Resolver()
+      var monitor = Monitor.of(window)
+
+      monitor.registerResolver(resolver)
+      monitor.unregisterResolver(Monitor)
+      expect(monitor.resolvers).to.have.key(resolver)
+
+      monitor.unregisterResolver(resolver)
+      expect(monitor.resolvers).to.be.empty
+    })
+  })
+
   describe('#subscribe', function () {
     it('should throw error when subscriber is not valid', function () {
       expect(function () {
@@ -319,6 +385,7 @@ describe('Monitor', function () {
 
       expect(Monitor.monitorMap).to.not.include(monitor)
       expect(monitor).to.have.property('_target').that.is.null
+      expect(monitor).to.have.property('_resolvers').that.is.null
       expect(monitor).to.have.property('_subscribers').that.is.null
       expect(monitor).to.have.property('_scrollMetric').that.is.null
       expect(monitor).to.have.property('_boundEventListener').that.is.null
@@ -354,6 +421,37 @@ describe('Monitor', function () {
       expect(monitor).to.have.property('_scrollMetric').that.has.property('top', 0)
       expect(resolver).to.have.property('count', 2)
       expect(subscriber).to.have.property('count', 1)
+    })
+
+    it('should invoke Monitor\'s own resolvers to resolve scroll events', function () {
+      var resolver1 = new Resolver()
+      resolver1.invoked = false
+      resolver1.resolve = function () {
+        this.invoked = true
+        return []
+      }
+
+      var resolver2 = new Resolver()
+      resolver2.invoked = false
+      resolver2.resolve = function () {
+        this.invoked = true
+        return []
+      }
+
+      var monitor1 = Monitor.of(window)
+      monitor1.registerResolver(resolver1)
+
+      var monitor2 = Monitor.of(document.body)
+      monitor2.registerResolver(resolver2)
+
+      window.dispatchEvent(new Event('scroll'))
+      expect(resolver1.invoked).to.be.true
+      expect(resolver2.invoked).to.be.false
+
+      resolver1.invoked = false
+      document.body.dispatchEvent(new Event('scroll'))
+      expect(resolver2.invoked).to.be.true
+      expect(resolver1.invoked).to.be.false
     })
   })
 })

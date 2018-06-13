@@ -44,6 +44,7 @@ const Monitor = (() => {
       }
 
       this._target = target
+      this._resolvers = new Set()
       this._subscribers = new Set()
       this._scrollMetric = Monitor._resolveMetric(target)
       this._boundEventListener = this._onTargetScroll.bind(this)
@@ -67,11 +68,35 @@ const Monitor = (() => {
     }
 
     /**
-     * Return the copy of a Set contains all registered resolvers
-     * @return {Set<Resolver>}
+     * Return the copy of a Set contains all registered global resolvers
+     * @return {Set}
      */
     static get resolvers() {
       return new Set(Resolvers)
+    }
+
+    /**
+     * Return the target of this monitor.
+     * @returns target of this monitor
+     */
+    get target() {
+      return this._target
+    }
+
+    /**
+     * Return the copy of a Set contains all subscribers of this monitor.
+     * @returns {Set}
+     */
+    get subscribers() {
+      return new Set(this._subscribers)
+    }
+
+    /**
+     * Return the copy of a Set contains all registered resolvers of this Monitor.
+     * @returns {Set}
+     */
+    get resolvers() {
+      return new Set(this._resolvers)
     }
 
     /**
@@ -92,8 +117,8 @@ const Monitor = (() => {
     }
 
     /**
-     * Register a new Resolver
-     * @param resolver should be an instance of {@link Resolver}
+     * Register a global Resolver visible to all Monitors.
+     * @param resolver should have a function named resolve to return an array of {@link Event}s
      * @throws when resolver is not valid
      */
     static registerResolver(resolver) {
@@ -102,7 +127,7 @@ const Monitor = (() => {
     }
 
     /**
-     * Unregister a resolver
+     * Unregister a global Resolver.
      * @param resolver the resolver should be unregistered
      */
     static unregisterResolver(resolver) {
@@ -117,10 +142,6 @@ const Monitor = (() => {
       Resolvers.clear()
     }
 
-    /**
-     * Create monitors and add subscribers to monitors by data attributes.
-     * This function can be invoked repeatedly safely, subscribers will not be registered repeatedly.
-     */
     static _initByData() {
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
         const targetData = subscriber.dataset[Data.MONITOR_TARGET]
@@ -163,13 +184,31 @@ const Monitor = (() => {
       }
     }
 
+    // Public
+
     static _checkResolver(resolver) {
       if (typeof resolver.resolve !== 'function') {
         throw new Error('The resolver must have function resolve!')
       }
     }
 
-    // Public
+    /**
+     * Register a resolver to this Monitor.
+     * @param resolver should have a function named resolve to return an array of {@link Event}s
+     * @throws when resolver is not valid
+     */
+    registerResolver(resolver) {
+      Monitor._checkResolver(resolver)
+      this._resolvers.add(resolver)
+    }
+
+    /**
+     * Unregister a resolver from this Monitor.
+     * @param resolver should be unregistered
+     */
+    unregisterResolver(resolver) {
+      this._resolvers.delete(resolver)
+    }
 
     /**
      * Add a new subscriber to the Monitor.
@@ -198,6 +237,7 @@ const Monitor = (() => {
       this._target.removeEventListener(Events.SCROLL, this._boundEventListener)
 
       this._target = null
+      this._resolvers = null
       this._subscribers = null
       this._scrollMetric = null
       this._boundEventListener = null
@@ -209,11 +249,14 @@ const Monitor = (() => {
       const lastMetric = this._scrollMetric
       this._scrollMetric = Monitor._resolveMetric(this._target)
 
-      for (const resolver of Resolvers) {
-        const resolvedEvents = resolver.resolve(lastMetric, this._scrollMetric, event)
-        for (const resolvedEvent of resolvedEvents) {
-          for (const subscriber of this._subscribers) {
-            subscriber.dispatchEvent(resolvedEvent)
+      const resolverSets = [this._resolvers, Resolvers]
+      for (const resolvers of resolverSets) {
+        for (const resolver of resolvers) {
+          const resolvedEvents = resolver.resolve(lastMetric, this._scrollMetric, event)
+          for (const resolvedEvent of resolvedEvents) {
+            for (const subscriber of this._subscribers) {
+              subscriber.dispatchEvent(resolvedEvent)
+            }
           }
         }
       }
