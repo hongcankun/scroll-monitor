@@ -158,11 +158,17 @@ const Monitor = (() => {
     static _resolveMetric(target) {
       let metric
       if (target instanceof Window) {
-        metric = new ScrollMetric(target.innerHeight, target.innerWidth,
+        const rootElement = target.document.documentElement
+        metric = new ScrollMetric(
+          rootElement.scrollHeight, rootElement.scrollWidth,
+          rootElement.clientHeight, rootElement.clientWidth,
           target.pageYOffset, target.pageXOffset)
       } else if (target instanceof Element) {
-        metric = new ScrollMetric(target.scrollHeight, target.scrollWidth,
-          target.scrollTop, target.scrollLeft)
+        metric = new ScrollMetric(
+          target.scrollHeight, target.scrollWidth,
+          target.clientHeight, target.clientWidth,
+          target.scrollTop, target.scrollLeft
+        )
       } else {
         throw new Error('Can not resolve ScrollMetric')
       }
@@ -265,21 +271,31 @@ const Monitor = (() => {
   }
 
   class ScrollMetric {
-    constructor(height, width, top, left) {
-      this._height = height
-      this._width = width
+    constructor(scrollHeight, scrollWidth, viewHeight, viewWidth, top, left) {
+      this._scrollHeight = scrollHeight
+      this._scrollWidth = scrollWidth
+      this._viewHeight = viewHeight
+      this._viewWidth = viewWidth
       this._top = top
       this._left = left
     }
 
     // Getter
 
-    get height() {
-      return this._height
+    get scrollHeight() {
+      return this._scrollHeight
     }
 
-    get width() {
-      return this._width
+    get scrollWidth() {
+      return this._scrollWidth
+    }
+
+    get viewHeight() {
+      return this._viewHeight
+    }
+
+    get viewWidth() {
+      return this._viewWidth
     }
 
     get top() {
