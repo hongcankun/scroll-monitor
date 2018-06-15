@@ -23,7 +23,8 @@
   "files": [
     "src/!(.babelrc).js",
     "dist/",
-    "assert/"
+    "assert/",
+    "readme.zh-CN.md"
   ],
   "repository": {
     "type": "git",

@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/swgrhck/scroll-monitor.svg?branch=master)](https://travis-ci.org/swgrhck/scroll-monitor)
 [![Coverage Status](https://coveralls.io/repos/github/swgrhck/scroll-monitor/badge.svg?branch=master)](https://coveralls.io/github/swgrhck/scroll-monitor?branch=master)
 
+[中文文档](./readme.zh-CN.md)
+
 This is a JavaScript plugin that monitors and responds to scroll event, and supports the usage via data attributes to separate html from script.
 
 [TOC]
