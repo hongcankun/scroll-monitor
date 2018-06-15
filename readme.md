@@ -153,7 +153,7 @@ You can specify multiple classes to be toggled by separating classes with spaces
 
 Now when window scrolls up, the `div` will toggle class `up` and `scroll`.
 
-See [demo](http://swgrhck/github.io/scroll-monitor/demo/scroll-direction-by-data.html).
+See [demo](http://swgrhck.github.io/scroll-monitor/demo/scroll-direction-by-data.html).
 
 ### By JavaScript
 
@@ -177,7 +177,7 @@ window.addEventListener('scroll.up.scroll-monitor', event => {
 })
 ```
 
-See [demo](http://swgrhck/github.io/scroll-monitor/demo/scroll-direction-by-script.html).
+See [demo](http://swgrhck.github.io/scroll-monitor/demo/scroll-direction-by-script.html).
 
 ### Processing interval
 
