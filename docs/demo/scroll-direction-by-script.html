@@ -21,21 +21,15 @@
       background-color: red;
     }
 
-    .scroll-up::before {
-      content: "scroll up";
-    }
-
     .scroll-down {
       background-color: green;
-    }
-
-    .scroll-down::before {
-      content: 'scroll down';
     }
   </style>
 </head>
 <body>
-  <div class="demo sticky-top" data-monitor="scroll"></div>
+  <div class="demo sticky-top" data-monitor="scroll">
+    scroll up or down to see effect
+  </div>
   <script src="../assert/script/scroll-monitor.umd.min.js"></script>
   <script>
     var element = document.querySelector('.demo')
