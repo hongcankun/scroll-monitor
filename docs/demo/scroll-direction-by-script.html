@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Direction Resolver Demo By JavaScript</title>
+  <style>
+    body {
+      height: 2000px;
+    }
+
+    .demo {
+      height: 100px;
+    }
+
+    .sticky-top {
+      position: sticky;
+      top: 100px;
+    }
+
+    .scroll-up {
+      background-color: red;
+    }
+
+    .scroll-up::before {
+      content: "scroll up";
+    }
+
+    .scroll-down {
+      background-color: green;
+    }
+
+    .scroll-down::before {
+      content: 'scroll down';
+    }
+  </style>
+</head>
+<body>
+  <div class="demo sticky-top" data-monitor="scroll"></div>
+  <script src="../../assert/script/scroll-monitor.umd.min.js"></script>
+  <script>
+    var element = document.querySelector('.demo')
+    element.addEventListener('scroll.up.scroll-monitor', evt => {
+      element.classList.remove('scroll-down')
+      element.classList.add('scroll-up')
+    })
+    element.addEventListener('scroll.down.scroll-monitor', evt => {
+      element.classList.remove('scroll-up')
+      element.classList.add('scroll-down')
+    })
+  </script>
+</body>
+</html>
