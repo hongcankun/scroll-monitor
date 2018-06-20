@@ -21,7 +21,7 @@ scroll-monitor的拓扑图如下所示：
 2. `Monitor` 接受到滚动事件并发送给 `Resolver`.
 3. `Resolver` 解析滚动事件，转换为其他事件，并返回给 `Monitor`.
 4. `Monitor` 接受到转换的事件然后转发给 `Subscriber`.
-5. `Subscriber` 可以对分类的滚动事件进行响应，例如向上滚动事件。
+5. `Subscriber` 可以对转换的滚动事件进行响应，例如向上滚动事件。
 
 ## 安装
 
@@ -37,17 +37,17 @@ scroll-monitor的拓扑图如下所示：
 
 ## Monitor
 
-这个插件的核心组件 `Monitor`, 它用于监听目标的滚动事件，解析目标的 `ScrollMetric` ，转发 `ScrollMetric` 以及滚动事件给 `Resolver`， 然后转发转换的事件给 `Subscriber`， 所以 `Subscriber` 可以监听分类的滚动事件，比如向上滚动。更多关于 `ScrollMetric` 的信息请查看后续章节。
+这个插件的核心组件 `Monitor`, 它用于监听目标的滚动事件，解析目标的 `ScrollMetric` ，转发 `ScrollMetric` 以及滚动事件给 `Resolver`， 然后转发转换的事件给 `Subscriber`， 所以 `Subscriber` 可以监听特定的滚动事件，比如向上滚动。更多关于 `ScrollMetric` 的信息请查看后续章节。
 
 ### 数据属性用法
 
-最简单且最推荐的订阅 `Monitor` 的方法是通过数据属性 `data-monitor="scroll"`：
+最简单且首选的订阅 `Monitor` 的方法是通过数据属性 `data-monitor="scroll"`：
 
 ```html
 <div data-monitor="scroll"></div>
 ```
 
-上面的 `div` 将会监听 `window` 的滚动事件，当 `window` 时，`Monitor` 会分发 `Resolver` 转换的事件给这个 `div`。
+上面的 `div` 将会监听 `window` 的滚动事件，当 `window` 滚动时，`Monitor` 会分发 `Resolver` 转换的事件给这个 `div`。
 
 你可以通过数据属性 `data-monitor-target="<querySelector>"` 来指定 `Monitor` 的目标：
 
@@ -93,15 +93,13 @@ monitor.subscribe(subscriber)
    Monitor.of(target).registerResolver(resolver)
    ```
 
-The only requirement of `Resolver` is it must have a `resolve` function returing an array of `Event`s:
-
-`Resolver` 唯一的要求是它必须有一个方法名为 `resolve`，返回 `Event` 数组：
+`Resolver` 唯一的要求是它必须有一个名为 `resolve` 的方法，返回 `Event` 数组：
 
 ```javascript
 const customResolver = {
   resolve(lastMetric, crtMetric, event) {
     const events = []
-    // resolve and add converted events
+    // 解析并添加转换的事件
     return events
   }
 }
@@ -130,7 +128,7 @@ Monitor.of(target).registerResolver(customResolver)
 
 `ScrollDirectionResolver` 是一个注册到 `Monitor` 的解析器，它可以解析滚动事件来识别滚动方向。
 
-如果你包含 `scroll-monitor.umd.min.js ` 或 `scroll-monitor-direction.min.js`，则当网页文档就绪时，它将向全部 `Monitor` 注册 `ScrollDirectionResolver` 。
+如果你包含 `scroll-monitor.umd.min.js ` 或 `scroll-monitor-direction.min.js`，则当网页加载完成时，它将向全部 `Monitor` 注册一个 `ScrollDirectionResolver` 。
 
 ### 数据属性用法
 
@@ -140,12 +138,12 @@ Monitor.of(target).registerResolver(customResolver)
 <div data-monitor="scroll scroll-direction"></div>
 ```
 
-上面的div将监视窗口的滚动事件，并根据滚动方向切换类，默认情况下，没有类将被切换，你可以通过数据属性指定要切换的类：
+上面的 `div` 将监视 `window` 的滚动事件，并根据滚动方向切换 `class`，默认情况下，没有 `class` 将被切换，你可以通过数据属性指定要切换的  `class`：
 
-* `data-scroll-up-classes="<class>"`
-* `data-scroll-down-classes="<class>"`
-* `data-scroll-left-classes="<class>"`
-* `data-scroll-right-classes="<class>"`
+* `data-scroll-up-classes="<classes>"`
+* `data-scroll-down-classes="<classes>"`
+* `data-scroll-left-classes="<classes>"`
+* `data-scroll-right-classes="<classes>"`
 
 可以通过用空格分隔要切换的多个类，例如：
 
@@ -153,13 +151,13 @@ Monitor.of(target).registerResolver(customResolver)
 <div data-monitor="scroll scroll-direction" data-scroll-up-classes="up scroll"></div>
 ```
 
-现在，当窗口向上滚动时， `div` 将切换类 `up` 和 `scroll` 。
+现在，当窗口向上滚动时， `div` 将切换 `up` 和 `scroll` 。
 
 查看 [demo](http://swgrhck.github.io/scroll-monitor/demo/scroll-direction-by-data.html).
 
 ### JavaScript用法
 
-另一种使用 `ScrollDirectionResolver` 的方法是使用JavaScript。 当目标滚动时， `ScrollDirectionResolver` 将解析和分发4种事件：
+另一种使用 `ScrollDirectionResolver` 的方法是使用JavaScript。 当目标滚动时， `ScrollDirectionResolver` 将解析并返回4种事件：
 
 * `scroll.up.scroll-monitor` 当目标向上滚动。
 
@@ -169,13 +167,13 @@ Monitor.of(target).registerResolver(customResolver)
 
 * `scroll.right.scroll-monitor` 当目标向右滚动。
 
-这意味着可以将事件侦听器添加到订阅者以执行任何想要的操作：
+这意味着可以将 `EventListener` 添加到订阅者以执行任何想要的操作：
 
 ```javascript
 Monitor.of(window).subscribe(window)
 
 window.addEventListener('scroll.up.scroll-monitor', event => {
-  // anything you want to do
+  // 执行想做的事情
 })
 ```
 
@@ -183,7 +181,7 @@ window.addEventListener('scroll.up.scroll-monitor', event => {
 
 ### 处理间隔
 
-由于滚动事件可以触发频率很高，所以 `ScrollDirectionResolver` 设置了一个时间间隔来识别方向，默认为 `50ms`。 可以通过 `resolver.inteval` 获取或设置时间间隔，或者通过 `new ScrollDirectionResolver(inteval)` 创建解析器时设置时间间隔。
+由于滚动事件的触发频率很高，所以 `ScrollDirectionResolver` 设置了一个时间间隔来进行处理，默认为 `50ms`。 可以通过 `resolver.interval` 获取或设置时间间隔，或者通过 `new ScrollDirectionResolver(interval)` 创建解析器时设置时间间隔。
 
 ```javascript
 const resolver = new ScrollDirectionResolver(interval)
@@ -198,7 +196,7 @@ resolver.interval = interval
 const customResolver = {
   resolve(lastMetric, crtMetric, event) {
     const events = []
-    // 解析并将转换的事件添加到events
+    // 解析并添加转换的事件
     return events
   }
 }
@@ -208,13 +206,13 @@ Monitor.registerResolver(customResolver)
 Monitor.of(target).registerResolver(customResolver)
 ```
 
- `Resolver` 的 `resolve` 函数接收3个参数：
+ `resolve` 函数接收3个参数：
 
 1. `lastMetric`: 目标滚动前的 `ScrollMetric` 。
 2. `crtMetric `: 目标滚动后的 `ScrollMetric` 。
 3. `event`: 目标发出的原始滚动事件。
 
-一旦你注册了你自己的 `Register`，你可以添加订阅者的 `EventListener `，以便他们能够正确响应你自己转换的事件。
+一旦你注册了你自己的 `Register`，你可以向订阅者添加 `EventListener `，以便他们能够响应你自己转换的事件。
 
 ## 浏览器支持
 

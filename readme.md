@@ -23,7 +23,7 @@ So, the processing procedure is as follow:
 2. `Monitor` receives scrolling events and delivers to `Resolver`s.
 3. `Resolver`s resolve scrolling events, convert to other events and return to `Monitor`.
 4. `Monitor` receives converted events and dispatchs to `Subscriber`s.
-5. `Subscriber`s can respond to classified scrolling events, such as scrolling up.
+5. `Subscriber`s can respond to converted scrolling events, such as scrolling up.
 
 ## Installation
 
@@ -39,7 +39,7 @@ Include `scroll-monitor.umd.min.js` script, or standalone JS files, such as `mon
 
 ## Monitor
 
-The core component of this plugin is `Monitor`, which monitors scroll events of targets, resolves `ScrollMetric` of target, delivers `ScrollMetric`s and scrolling events to `Resolver`s, then dispatchs converted events to subscribers, so subscribers can listen to classified scroll event, such as scrolling up. See follow charpter for more information about `ScrollMetric`.
+The core component of this plugin is `Monitor`, which monitors scroll events of targets, resolves `ScrollMetric` of target, delivers `ScrollMetric`s and scrolling events to `Resolver`s, then dispatchs converted events to subscribers, so subscribers can listen to converted scrolling event, such as scrolling up. See follow charpter for more information about `ScrollMetric`.
 
 ### By data attributes
 
@@ -49,7 +49,7 @@ The easiest and preferred way to subscribe to `Monitor` is by data attribute `da
 <div data-monitor="scroll"></div>
 ```
 
-The `div` above will monitor scroll events of `window`, so when window scrolls, `Monitor` will dispatch events converted by `Resolver`s  to this `div`.
+The `div` above will monitor scrolling events of `window`, so when window scrolls, `Monitor` will dispatch events converted by `Resolver`s  to this `div`.
 
 You can also specify the targets of `Monitor` by data attribute `data-monitor-target="<querySelector>"`:
 
@@ -142,10 +142,10 @@ The easiest and preferred way to use `ScrollDirectionResolver` is by data attrib
 
 The `div` above will monitor scrolling events of `window`, and toggle the classes according to scroll direction, by default, none classes will be toggled, you should specify the classes by data attributes:
 
-* `data-scroll-up-classes="<class>"`
-* `data-scroll-down-classes="<class>"`
-* `data-scroll-left-classes="<class>"`
-* `data-scroll-right-classes="<class>"`
+* `data-scroll-up-classes="<classes>"`
+* `data-scroll-down-classes="<classes>"`
+* `data-scroll-left-classes="<classes>"`
+* `data-scroll-right-classes="<classes>"`
 
 You can specify multiple classes to be toggled by separating classes with spaces. For example:
 
@@ -183,7 +183,7 @@ See [demo](http://swgrhck.github.io/scroll-monitor/demo/scroll-direction-by-scri
 
 ### Processing interval
 
-Since `scroll` events can fire at a high rate, so `ScrollDirectionResolver` have a time interval to recognize direction, which defaults to `50ms`. You can get or set interval by `resolver.inteval`, or set `interval` when creating resolver by `new ScrollDirectionResolver(inteval)`.
+Since `scroll` events can fire at a high rate, so `ScrollDirectionResolver` have a time interval to recognize direction, which defaults to `50ms`. You can get or set interval by `resolver.interval`, or set `interval` when creating resolver by `new ScrollDirectionResolver(interval)`.
 
 ```javascript
 const resolver = new ScrollDirectionResolver(interval)
@@ -192,7 +192,7 @@ resolver.interval = interval
 
 ## Extend ScrollMonitor
 
-The `ScrollMonitor` is flexible and pluggable, this means you can extend `ScrollMonitor` easily if present components can't satisfy your needs, the only thing you should do is register your own `Resolver` to `Monitor`:
+The `ScrollMonitor` is flexible and pluggable, this means you can extend `ScrollMonitor` easily if present components can't satisfy your needs, the only thing you need to do is to register your own `Resolver` to `Monitor`:
 
 ```javascript
 const customResolver = {
@@ -208,7 +208,7 @@ Monitor.registerResolver(customResolver)
 Monitor.of(target).registerResolver(customResolver)
 ```
 
-The `resolve` function of `Resolver` receives 3 arguments:
+The `resolve` function receives 3 arguments:
 
 1. `lastMetric`: the `ScrollMetric` before target scrolls.
 2. `crtMetric `: the `ScrollMetric` after target scrolls.
