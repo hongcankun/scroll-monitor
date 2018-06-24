@@ -2,7 +2,7 @@ import Monitor from './monitor'
 
 /**
  * ----------------------------------------------------------------------------------
- * ScrollMonitor: scroll-up.js
+ * ScrollMonitor: scroll-direction-resolver.js
  * Licensed under MIT (https://github.com/swgrhck/scroll-monitor/blob/master/LICENSE)
  * ----------------------------------------------------------------------------------
  */
