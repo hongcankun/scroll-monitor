@@ -7,15 +7,7 @@
 
 const Monitor = (() => {
 
-  const EVENT_NAMESPACE = 'scroll-monitor'
-
-  const Selectors = {
-    SCROLL_MONITOR: '[data-monitor~="scroll"]'
-  }
-
-  const Data = {
-    MONITOR_TARGET: 'monitorTarget'
-  }
+  const NAMESPACE = 'scroll-monitor'
 
   const Events = {
     SCROLL: 'scroll',
@@ -23,11 +15,10 @@ const Monitor = (() => {
   }
 
   const ValidTargetTypes = [Window, Element]
-
   const MonitorMap = new Map()
-  const Resolvers = new Set()
 
   class Monitor {
+
     /**
      * This method will destroy the Monitor of the target if exists, then return a new one.
      * Consider use {@link Monitor.of} instead.
@@ -45,7 +36,6 @@ const Monitor = (() => {
 
       this._target = target
       this._resolvers = new Set()
-      this._subscribers = new Set()
       this._scrollMetric = Monitor._resolveMetric(target)
       this._boundEventListener = this._onTargetScroll.bind(this)
 
@@ -56,27 +46,17 @@ const Monitor = (() => {
     // Static
 
     static get NAMESPACE() {
-      return EVENT_NAMESPACE
+      return NAMESPACE
     }
 
     /**
-     * Return the copy of the monitor map whose keys are targets and values are monitors
-     * @return {Map<Window | Element, Monitor>}
+     * @return {Map<Window | Element, Monitor>} the copy of the monitor map whose keys are targets and values are monitors
      */
     static get monitorMap() {
       return new Map(MonitorMap)
     }
 
     /**
-     * Return the copy of a Set contains all registered global resolvers
-     * @return {Set}
-     */
-    static get resolvers() {
-      return new Set(Resolvers)
-    }
-
-    /**
-     * Return the target of this monitor.
      * @returns target of this monitor
      */
     get target() {
@@ -84,16 +64,7 @@ const Monitor = (() => {
     }
 
     /**
-     * Return the copy of a Set contains all subscribers of this monitor.
-     * @returns {Set}
-     */
-    get subscribers() {
-      return new Set(this._subscribers)
-    }
-
-    /**
-     * Return the copy of a Set contains all registered resolvers of this Monitor.
-     * @returns {Set}
+     * @returns {Set} the copy of a Set contains all registered resolvers of this Monitor
      */
     get resolvers() {
       return new Set(this._resolvers)
@@ -105,7 +76,7 @@ const Monitor = (() => {
      * Otherwise, create a new Monitor for the target and return.
      * @param target target of the monitor
      * @throws when target is not valid
-     * @return {Monitor}
+     * @return {Monitor} the Monitor of the target
      */
     static of(target) {
       Monitor._checkTarget(target)
@@ -117,42 +88,10 @@ const Monitor = (() => {
     }
 
     /**
-     * Register a global Resolver visible to all Monitors.
-     * @param resolver should have a function named resolve to return an array of {@link Event}s
-     * @throws when resolver is not valid
-     */
-    static registerResolver(resolver) {
-      this._checkResolver(resolver)
-      Resolvers.add(resolver)
-    }
-
-    /**
-     * Unregister a global Resolver.
-     * @param resolver the resolver should be unregistered
-     */
-    static unregisterResolver(resolver) {
-      Resolvers.delete(resolver)
-    }
-
-    /**
-     * Destroy all managed Monitors and unregister all Resolvers
+     * Destroy all managed Monitors.
      */
     static reset() {
       MonitorMap.forEach(monitor => monitor.destroy())
-      Resolvers.clear()
-    }
-
-    static _initByData() {
-      for (const subscriber of document.querySelectorAll(Selectors.SCROLL_MONITOR)) {
-        const targetData = subscriber.dataset[Data.MONITOR_TARGET]
-        if (targetData) {
-          for (const target of document.querySelectorAll(targetData)) {
-            Monitor.of(target).subscribe(subscriber)
-          }
-        } else {
-          Monitor.of(window).subscribe(subscriber)
-        }
-      }
     }
 
     static _resolveMetric(target) {
@@ -184,12 +123,6 @@ const Monitor = (() => {
       throw new Error(`The target must be an instance of one in ${ValidTargetTypes.map(type => type.name).join(', ')}!`)
     }
 
-    static _checkSubscriber(subscriber) {
-      if (!(subscriber instanceof EventTarget)) {
-        throw new Error('The subscriber must be an instance of EventTarget!')
-      }
-    }
-
     // Public
 
     static _checkResolver(resolver) {
@@ -200,7 +133,7 @@ const Monitor = (() => {
 
     /**
      * Register a resolver to this Monitor.
-     * @param resolver should have a function named resolve to return an array of {@link Event}s
+     * @param resolver should have a function named resolve
      * @throws when resolver is not valid
      */
     registerResolver(resolver) {
@@ -210,28 +143,10 @@ const Monitor = (() => {
 
     /**
      * Unregister a resolver from this Monitor.
-     * @param resolver should be unregistered
+     * @return true the resolver has been removed successfully
      */
     unregisterResolver(resolver) {
-      this._resolvers.delete(resolver)
-    }
-
-    /**
-     * Add a new subscriber to the Monitor.
-     * @param subscriber should be an instance of {@link EventTarget}
-     * @throws when subscriber is not valid
-     */
-    subscribe(subscriber) {
-      Monitor._checkSubscriber(subscriber)
-      this._subscribers.add(subscriber)
-    }
-
-    /**
-     * Remove a subscriber from the Monitor.
-     * @param subscriber the subscriber should be removed from the monitor
-     */
-    unsubscribe(subscriber) {
-      this._subscribers.delete(subscriber)
+      return this._resolvers.delete(resolver)
     }
 
     /**
@@ -244,7 +159,6 @@ const Monitor = (() => {
 
       this._target = null
       this._resolvers = null
-      this._subscribers = null
       this._scrollMetric = null
       this._boundEventListener = null
     }
@@ -255,16 +169,8 @@ const Monitor = (() => {
       const lastMetric = this._scrollMetric
       this._scrollMetric = Monitor._resolveMetric(this._target)
 
-      const resolverSets = [this._resolvers, Resolvers]
-      for (const resolvers of resolverSets) {
-        for (const resolver of resolvers) {
-          const resolvedEvents = resolver.resolve(lastMetric, this._scrollMetric, event)
-          for (const resolvedEvent of resolvedEvents) {
-            for (const subscriber of this._subscribers) {
-              subscriber.dispatchEvent(resolvedEvent)
-            }
-          }
-        }
+      for (const resolver of this._resolvers) {
+        resolver.resolve(lastMetric, this._scrollMetric, event)
       }
     }
 
@@ -306,10 +212,6 @@ const Monitor = (() => {
       return this._left
     }
   }
-
-  window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    Monitor._initByData()
-  })
 
   return Monitor
 })()
