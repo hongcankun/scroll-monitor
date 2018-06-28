@@ -14,13 +14,13 @@ const Monitor = (() => {
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
   }
 
-  const ValidTargetTypes = [Window, Element]
-  const MonitorMap = new Map()
+  const TargetTypes = [Window, Element]
+  const Monitors = new Map()
 
   class Monitor {
 
     /**
-     * This method will destroy the Monitor of the target if exists, then return a new one.
+     * Destroy the monitor of the given target if it has been created, then return a new one.
      * Consider use {@link Monitor.of} instead.
      * @param target the target of the monitor
      * @throws when target is invalid
@@ -30,8 +30,8 @@ const Monitor = (() => {
       target = target || window
       Monitor._checkTarget(target)
 
-      if (MonitorMap.has(target)) {
-        MonitorMap.get(target).destroy()
+      if (Monitors.has(target)) {
+        Monitors.get(target).destroy()
       }
 
       this._target = target
@@ -40,7 +40,7 @@ const Monitor = (() => {
       this._boundEventListener = this._onTargetScroll.bind(this)
 
       this._target.addEventListener(Events.SCROLL, this._boundEventListener)
-      MonitorMap.set(target, this)
+      Monitors.set(target, this)
     }
 
     // Static
@@ -50,48 +50,47 @@ const Monitor = (() => {
     }
 
     /**
-     * @return {Map<Window | Element, Monitor>} the copy of the monitor map whose keys are targets and values are monitors
+     * @return {Map<Window | Element, Monitor>} a map contains all monitors that has been created.
      */
-    static get monitorMap() {
-      return new Map(MonitorMap)
+    static get monitors() {
+      return new Map(Monitors)
     }
 
     /**
-     * @returns target of this monitor
+     * @return the target of this monitor
      */
     get target() {
       return this._target
     }
 
     /**
-     * @returns {Set} the copy of a Set contains all registered resolvers of this Monitor
+     * @return {Set} a set contains all resolvers of this monitor
      */
     get resolvers() {
       return new Set(this._resolvers)
     }
 
     /**
-     * Get the Monitor of the target.
-     * If the Monitor of the target exists, then return it.
-     * Otherwise, create a new Monitor for the target and return.
-     * @param target target of the monitor
-     * @throws when target is not valid
-     * @return {Monitor} the Monitor of the target
+     * Get the monitor of the given target.
+     * If the monitor of the given target has been created, then return it.
+     * Otherwise, create a new monitor for the given target and return.
+     * @param target the target of the monitor
+     * @throws when target is invalid
+     * @return {Monitor} the monitor of the given target
      */
     static of(target) {
-      Monitor._checkTarget(target)
-      if (MonitorMap.has(target)) {
-        return MonitorMap.get(target)
+      if (Monitors.has(target)) {
+        return Monitors.get(target)
       } else {
         return new Monitor(target)
       }
     }
 
     /**
-     * Destroy all managed Monitors.
+     * Destroy all monitors that has been created.
      */
-    static reset() {
-      MonitorMap.forEach(monitor => monitor.destroy())
+    static clear() {
+      Monitors.forEach(monitor => monitor.destroy())
     }
 
     static _resolveMetric(target) {
@@ -115,46 +114,52 @@ const Monitor = (() => {
     }
 
     static _checkTarget(target) {
-      for (const type of ValidTargetTypes) {
+      for (const type of TargetTypes) {
         if (target instanceof type) {
           return
         }
       }
-      throw new Error(`The target must be an instance of one in ${ValidTargetTypes.map(type => type.name).join(', ')}!`)
+      throw new Error(`The target must be an instance of one in ${TargetTypes.map(type => type.name).join(', ')}!`)
     }
 
     // Public
 
-    static _checkResolver(resolver) {
-      if (typeof resolver.resolve !== 'function') {
-        throw new Error('The resolver must have function resolve!')
-      }
-    }
-
     /**
-     * Register a resolver to this Monitor.
+     * Add a resolver to this monitor.
      * @param resolver should have a function named resolve
-     * @throws when resolver is not valid
+     * @throws when resolver is invalid
      */
-    registerResolver(resolver) {
-      Monitor._checkResolver(resolver)
+    addResolver(resolver) {
+      if (typeof resolver.resolve !== 'function') {
+        throw new Error('The resolver should have a function named resolve!')
+      }
       this._resolvers.add(resolver)
     }
 
     /**
-     * Unregister a resolver from this Monitor.
+     * Remove a resolver from this monitor.
      * @return true the resolver has been removed successfully
      */
-    unregisterResolver(resolver) {
+    removeResolver(resolver) {
       return this._resolvers.delete(resolver)
     }
 
     /**
-     * Destroy the Monitor.
-     * Once this method invoked, this Monitor would not be available anymore.
+     * Remove all resolvers of this monitor.
+     * @return {Set} removed resolvers of this monitor
+     */
+    clearResolvers() {
+      const resolvers = this._resolvers
+      this._resolvers = new Set()
+      return resolvers
+    }
+
+    /**
+     * Destroy the monitor.
+     * This monitor would not be available anymore after this method has been called.
      */
     destroy() {
-      MonitorMap.delete(this._target)
+      Monitors.delete(this._target)
       this._target.removeEventListener(Events.SCROLL, this._boundEventListener)
 
       this._target = null

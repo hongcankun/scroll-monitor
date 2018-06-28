@@ -7,78 +7,110 @@ describe('Monitor', function () {
     }
   }
 
-  beforeEach('reset Monitor', function () {
-    Monitor.reset()
+  beforeEach('clear monitors', function () {
+    Monitor.clear()
   })
 
-  it('should Monitor defined properly', function () {
+  it('should define Monitor properly', function () {
     expect(Monitor).to.be.a('function')
   })
 
-  describe('static #NAMESPACE', function () {
-    it('should return as a string', function () {
+  describe('@constructor', function () {
+    it('should create a monitor properly', function () {
+      var monitor = new Monitor(window)
+      expect(monitor).to.be.an.instanceof(Monitor)
+      expect(Monitor.monitors).to.include(monitor)
+
+      monitor._scrollMetric._top = 100
+      window.dispatchEvent(new Event('scroll'))
+      expect(monitor._scrollMetric).to.have.property('top', 0)
+    })
+
+    it('should return a monitor of window when target is undefined', function () {
+      expect(new Monitor()._target).to.be.equal(window)
+    })
+
+    it('should throw error when target is invalid', function () {
+      expect(function () {
+        new Monitor(Monitor)
+      }).to.throw()
+    })
+
+    it('should destroy and then return a new monitor when the monitor of target has been created', function () {
+      var origin = new Monitor(window)
+      expect(Monitor.monitors.has(window)).to.be.true
+      expect(Monitor.of(window)).to.be.equal(origin)
+      var after = new Monitor(window)
+      expect(Monitor.of(window)).to.be.equal(after).and.not.be.equal(origin)
+    })
+  })
+
+  describe('@NAMESPACE', function () {
+    it('should return NAMESPACE as a string', function () {
       expect(Monitor).to.have.property('NAMESPACE').that.is.a('string')
     })
   })
 
-  describe('static #monitorMap', function () {
-    it('should return an empty map if there has no monitor registered', function () {
-      expect(Monitor.monitorMap).to.be.empty
+  describe('@monitors', function () {
+    it('should return an empty map if there has not any monitors created', function () {
+      expect(Monitor.monitors).to.be.empty
     })
 
-    it('should return a copy of the monitorMap contains all Monitors', function () {
+    it('should return a map contains all monitors', function () {
       var target1 = window
       Monitor.of(target1)
-      expect(Monitor.monitorMap).to.have.key(target1).and.have.property('size', 1)
+      expect(Monitor.monitors).to.have.key(target1).and.have.property('size', 1)
 
       var target2 = document.body
       Monitor.of(target2)
-      expect(Monitor.monitorMap).to.have.all.keys(target1, target2).and.have.property('size', 2)
+      expect(Monitor.monitors).to.have.all.keys(target1, target2).and.have.property('size', 2)
     })
 
-    it('should return a copy that will not influence origin map', function () {
+    it('should not modify origin map if add or remove monitors to/from returned map', function () {
       Monitor.of(window)
-      expect(Monitor.monitorMap).to.have.key(window)
+      expect(Monitor.monitors).to.have.key(window)
 
-      var copy = Monitor.monitorMap
+      var copy = Monitor.monitors
       copy.clear()
       expect(copy).to.be.empty
-      expect(Monitor.monitorMap).to.have.key(window)
+      expect(Monitor.monitors).to.have.key(window)
     })
   })
 
-  describe('static #of', function () {
-    it('should throw error when target is not valid', function () {
+  describe('@of', function () {
+    it('should throw error when target is invalid', function () {
       expect(function () {
         Monitor.of(Monitor)
       }).to.throw()
     })
 
-    it('should create and return a new monitor when the monitor of the target does not exist', function () {
+    it('should create a new monitor when the monitor of the target have not been created', function () {
       var target = window
-      expect(Monitor.monitorMap.get(target)).to.not.exist
+      expect(Monitor.monitors.get(target)).to.not.exist
       expect(Monitor.of(target)).to.exist.and.be.an.instanceof(Monitor)
-      expect(Monitor.monitorMap.get(target)).to.exist.and.be.an.instanceof(Monitor)
+      expect(Monitor.monitors.get(target)).to.exist.and.be.an.instanceof(Monitor)
     })
 
-    it('should return same monitor when the monitor of the target has existed', function () {
+    it('should return same monitor when the monitor of the target has been created', function () {
       var target = window
       var monitor = new Monitor(target)
-      expect(Monitor.monitorMap.get(target)).to.exist
+      expect(Monitor.monitors.get(target)).to.exist
       expect(Monitor.of(target)).to.be.equal(monitor)
       expect(Monitor.of(target)).to.be.equal(Monitor.of(target))
     })
   })
 
-  describe('#reset', function () {
-    it('should reset all monitors', function () {
+  describe('@clear', function () {
+    it('should destroy all monitors', function () {
       Monitor.of(window)
+      expect(Monitor.monitors).to.not.be.empty
 
-      expect(Monitor.monitorMap).to.not.be.empty
+      Monitor.clear()
+      expect(Monitor.monitors).to.be.empty
     })
   })
 
-  describe('static #_resolveMetric', function () {
+  describe('@_resolveMetric', function () {
     it('should throw error when target is not valid', function () {
       expect(function () {
         Monitor._resolveMetric(Monitor)
@@ -106,7 +138,7 @@ describe('Monitor', function () {
     })
   })
 
-  describe('static #_checkTarget', function () {
+  describe('@checkTarget', function () {
     it('should not throw error when target is an instance of Window or Element', function () {
       expect(function () {
         Monitor._checkTarget(window)
@@ -124,50 +156,6 @@ describe('Monitor', function () {
     })
   })
 
-  describe('static #_checkResolver', function () {
-    it('should throw error when resolver is not an instance of Resolver', function () {
-      expect(function () {
-        Monitor._checkResolver(Monitor)
-      }).to.throw()
-    })
-
-    it('should not throw error when resolver is an instance of Resolver', function () {
-      expect(function () {
-        Monitor._checkResolver(new Resolver())
-      }).to.not.throw()
-    })
-  })
-
-  describe('#constructor', function () {
-    it('should create a monitor properly', function () {
-      var monitor = new Monitor(window)
-      expect(monitor).to.be.an.instanceof(Monitor)
-      expect(Monitor.monitorMap).to.include(monitor)
-
-      monitor._scrollMetric._top = 100
-      window.dispatchEvent(new Event('scroll'))
-      expect(monitor._scrollMetric).to.have.property('top', 0)
-    })
-
-    it('should return a monitor of window when target is undefined', function () {
-      expect(new Monitor()._target).to.be.equal(window)
-    })
-
-    it('should throw error when target is invalid', function () {
-      expect(function () {
-        new Monitor(Monitor)
-      }).to.throw()
-    })
-
-    it('should destroy and then return a new monitor when the monitor of target exists', function () {
-      var origin = new Monitor(window)
-      expect(Monitor.monitorMap.has(window)).to.be.true
-      expect(Monitor.of(window)).to.be.equal(origin)
-      var after = new Monitor(window)
-      expect(Monitor.of(window)).to.be.equal(after).and.not.be.equal(origin)
-    })
-  })
-
   describe('#target', function () {
     it('should return the target of the monitor which is read-only', function () {
       var monitor = Monitor.of(window)
@@ -179,12 +167,12 @@ describe('Monitor', function () {
   })
 
   describe('#resolvers', function () {
-    it('should a copy of Monitor\'s own resolvers', function () {
+    it('should return a set contains all resolvers', function () {
       var monitor = Monitor.of(window)
       expect(monitor.resolvers).to.be.empty
 
       var resolver = new Resolver()
-      monitor.registerResolver(resolver)
+      monitor.addResolver(resolver)
       expect(monitor.resolvers).to.have.key(resolver)
 
       monitor.resolvers.delete(resolver)
@@ -192,31 +180,41 @@ describe('Monitor', function () {
     })
   })
 
-  describe('#registerResolver', function () {
-    it('should register resolver successfully when resolver is valid', function () {
+  describe('#addResolver', function () {
+    it('should add resolver successfully when resolver is valid', function () {
       var resolver = new Resolver()
       var monitor = Monitor.of(window)
-      monitor.registerResolver(resolver)
+      monitor.addResolver(resolver)
       expect(monitor.resolvers).to.have.key(resolver)
     })
 
     it('should throw error when resolver is invalid', function () {
       expect(function () {
-        Monitor.of(window).registerResolver(Monitor)
-      }).to.throw
+        Monitor.of(window).addResolver(Monitor)
+      }).to.throw()
     })
   })
 
-  describe('#unregisterResolver', function () {
-    it('should unregister resolver properly', function () {
+  describe('#removeResolver', function () {
+    it('should remove resolver successfully', function () {
       var resolver = new Resolver()
       var monitor = Monitor.of(window)
 
-      monitor.registerResolver(resolver)
-      expect(monitor.unregisterResolver(Monitor)).to.be.false
+      monitor.addResolver(resolver)
+      expect(monitor.removeResolver(Monitor)).to.be.false
       expect(monitor.resolvers).to.have.key(resolver)
 
-      expect(monitor.unregisterResolver(resolver)).to.be.true
+      expect(monitor.removeResolver(resolver)).to.be.true
+      expect(monitor.resolvers).to.be.empty
+    })
+  })
+
+  describe('#clearResolvers', function () {
+    it('should remove all resolvers', function () {
+      var monitor = Monitor.of(window)
+      monitor.addResolver(new Resolver())
+      monitor.addResolver(new Resolver())
+      monitor.clearResolvers()
       expect(monitor.resolvers).to.be.empty
     })
   })
@@ -226,7 +224,7 @@ describe('Monitor', function () {
       var monitor = Monitor.of(window)
       monitor.destroy()
 
-      expect(Monitor.monitorMap).to.not.include(monitor)
+      expect(Monitor.monitors).to.not.include(monitor)
       expect(monitor).to.have.property('_target').that.is.null
       expect(monitor).to.have.property('_resolvers').that.is.null
       expect(monitor).to.have.property('_scrollMetric').that.is.null
@@ -252,10 +250,10 @@ describe('Monitor', function () {
       }
 
       var monitor1 = Monitor.of(window)
-      monitor1.registerResolver(resolver1)
+      monitor1.addResolver(resolver1)
 
       var monitor2 = Monitor.of(document.body)
-      monitor2.registerResolver(resolver2)
+      monitor2.addResolver(resolver2)
 
       window.dispatchEvent(new Event('scroll'))
       expect(resolver1.invoked).to.be.true
