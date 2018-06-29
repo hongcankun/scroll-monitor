@@ -1,38 +1,96 @@
+var Monitor = window.Monitor || window.scrollMonitor.Monitor
 var ScrollDirectionResolver = window.ScrollDirectionResolver || window.scrollMonitor.ScrollDirectionResolver
 
 describe('ScrollDirectionResolver', function () {
-  it('should defind as a function', function () {
+  it('should define ScrollDirectionResolver as a function', function () {
     expect(ScrollDirectionResolver).to.be.a('function')
   })
 
-  describe('#interval', function () {
-    it('should return default interval when undefined', function () {
-      expect(new ScrollDirectionResolver()).to.have.property('interval', 50)
+  describe('@constructor', function () {
+    it('should create a ScrollDirectionResolver as expected', function () {
+      var resolver = new ScrollDirectionResolver(window)
+      expect(resolver).to.have.property('subscriber', window)
+      expect(resolver).to.have.property('interval', 50)
+
+      resolver = new ScrollDirectionResolver(document.body, 100)
+      expect(resolver).to.have.property('subscriber', document.body)
+      expect(resolver).to.have.property('interval', 100)
     })
 
-    it('should return defined interval', function () {
-      expect(new ScrollDirectionResolver(0)).to.have.property('interval', 0)
+    it('should throw error when the given subscriber is invalid', function () {
+      expect(function () {
+        new ScrollDirectionResolver({})
+      }).to.throw()
+    })
+  })
+
+  describe('$subscriber', function () {
+    it('should return the subscriber of the resolver', function () {
+      var resolver = new ScrollDirectionResolver(window)
+      expect(resolver.subscriber).to.be.equal(window)
     })
 
-    it('should change interval', function () {
-      var resolver = new ScrollDirectionResolver()
+    it('should set the subscriber of the resolver as expected', function () {
+      var resolver = new ScrollDirectionResolver(window)
+      resolver.subscriber = document.body
+      expect(resolver.subscriber).to.be.equal(document.body)
+    })
+
+    it('should throw error when set a invalid subscribe to the resolver', function () {
+      expect(function () {
+        var resolver = new ScrollDirectionResolver(window)
+        resolver.subscriber = {}
+      }).to.throw()
+    })
+  })
+
+  describe('$interval', function () {
+    it('should return the interval of the resolver', function () {
+      var resolver = new ScrollDirectionResolver(window)
+      expect(resolver.interval).to.be.equal(50)
+    })
+
+    it('should set interval of the resolver as expected', function () {
+      var resolver = new ScrollDirectionResolver(window)
       resolver.interval = 100
-      expect(resolver.interval).to.equal(100)
+      expect(resolver.interval).to.be.equal(100)
+    })
+
+    it('should set default interval to the resolver when given interval is invalid', function () {
+      var resolver = new ScrollDirectionResolver(window, 100)
+      resolver.interval = 'invalid'
+      expect(resolver.interval).to.be.equal(50)
     })
   })
 
   describe('#eventTypes', function () {
     it('should return an array contains defined event types', function () {
-      expect(new ScrollDirectionResolver()).to.have.property('eventTypes').that.has.lengthOf(4)
+      expect(new ScrollDirectionResolver(window)).to.have.property('eventTypes').that.has.lengthOf(4)
     })
   })
 
-  describe('static #_initByData', function () {
-    it('should register listeners to do nothing when toggle classes data is not defined', function () {
-      var subscriber = document.createElement('p')
+  describe('@_initByData', function () {
+    var subscriber
+
+    beforeEach('clear monitors', function () {
+      Monitor.clear()
+      subscriber = document.createElement('p')
       subscriber.dataset['monitor'] = 'scroll-direction and something else'
       document.body.appendChild(subscriber)
+    })
 
+    it('should add resolvers to monitors of specified targets', function () {
+      subscriber.dataset['target'] = 'body'
+      ScrollDirectionResolver._initByData()
+
+      var monitor = Monitor.of(document.body)
+      expect(monitor.resolvers).to.not.be.empty
+      monitor.resolvers.forEach(function (resolver) {
+        expect(resolver.subscriber).to.be.equal(subscriber)
+      })
+    })
+
+    it('should register listeners to do nothing when toggle classes data is not defined', function () {
       ScrollDirectionResolver._initByData()
 
       subscriber.dispatchEvent(new Event('scroll.up.scroll-monitor'))
@@ -49,13 +107,10 @@ describe('ScrollDirectionResolver', function () {
     })
 
     it('should register listener to subscribers to toggle defined classes as specified by data', function () {
-      var subscriber = document.createElement('p')
-      subscriber.dataset['monitor'] = 'scroll-direction and something else'
-      subscriber.dataset['scrollUpClasses'] = 'up up2'
-      subscriber.dataset['scrollDownClasses'] = '  down  '
-      subscriber.dataset['scrollLeftClasses'] = '  left  left2  '
-      subscriber.dataset['scrollRightClasses'] = 'right'
-      document.body.appendChild(subscriber)
+      subscriber.dataset['scrollUp'] = 'up up2'
+      subscriber.dataset['scrollDown'] = '  down  '
+      subscriber.dataset['scrollLeft'] = '  left  left2  '
+      subscriber.dataset['scrollRight'] = 'right'
 
       ScrollDirectionResolver._initByData()
 
@@ -76,36 +131,61 @@ describe('ScrollDirectionResolver', function () {
   })
 
   describe('#resolve', function () {
-    it('should return proper events array', function () {
-      var resolver = new ScrollDirectionResolver()
+    var scrollUp = false, scrollDown = false
+
+    before('add event listener to window', function () {
+      window.addEventListener('scroll.up.scroll-monitor', function () {
+        scrollUp = true
+      })
+      window.addEventListener('scroll.down.scroll-monitor', function () {
+        scrollDown = true
+      })
+    })
+
+    beforeEach('reset scroll states', function () {
+      scrollUp = false
+      scrollDown = false
+    })
+
+    it('should dispatch proper events to subscriber', function () {
+      var resolver = new ScrollDirectionResolver(window)
       var lastMetric = {top: 100, left: 0}, crtMetric = {top: 0, left: 100}
 
-      var events = resolver.resolve(lastMetric, crtMetric)
-      expect(events).to.be.an.instanceof(Array).that.has.lengthOf(2)
-      expect(events[0]).to.be.an.instanceof(Event).that.has.property('type', 'scroll.up.scroll-monitor')
-      expect(events[1]).to.be.an.instanceof(Event).that.has.property('type', 'scroll.right.scroll-monitor')
+      resolver.resolve(lastMetric, crtMetric)
+      expect(scrollUp).to.be.true
+      expect(scrollDown).to.be.false
 
-      resolver = new ScrollDirectionResolver()
-      events = resolver.resolve(crtMetric, lastMetric)
-      expect(events).to.be.an.instanceof(Array).that.has.lengthOf(2)
-      expect(events[0]).to.be.an.instanceof(Event).that.has.property('type', 'scroll.down.scroll-monitor')
-      expect(events[1]).to.be.an.instanceof(Event).that.has.property('type', 'scroll.left.scroll-monitor')
+      resolver = new ScrollDirectionResolver(window)
+      resolver.resolve(crtMetric, lastMetric)
+      expect(scrollDown).to.be.true
     })
 
     it('should not resolve events if subsequent invocations are within time interval', function () {
-      var resolver = new ScrollDirectionResolver(1000)
+      var resolver = new ScrollDirectionResolver(window, 1000)
       var m1 = {top: 100, left: 0}, m2 = {top: 0, left: 100}
-      expect(resolver.resolve(m1, m2)).to.have.lengthOf.above(0)
-      expect(resolver.resolve(m1, m2)).to.have.lengthOf(0)
+
+      resolver.resolve(m1, m2)
+      expect(scrollUp).to.be.true
+      expect(scrollDown).to.be.false
+
+      resolver.resolve(m2, m1)
+      expect(scrollDown).to.be.false
     })
 
     it('should resolve events if exceeds the time interval', function (done) {
-      var resolver = new ScrollDirectionResolver()
+      var resolver = new ScrollDirectionResolver(window)
       var m1 = {top: 100, left: 0}, m2 = {top: 0, left: 100}
-      expect(resolver.resolve(m1, m2)).to.have.lengthOf.above(0)
-      expect(resolver.resolve(m1, m2)).to.have.lengthOf(0)
+
+      resolver.resolve(m1, m2)
+      expect(scrollUp).to.be.true
+      expect(scrollDown).to.be.false
+
+      resolver.resolve(m2, m1)
+      expect(scrollDown).to.be.false
+
       setTimeout(function () {
-        expect(resolver.resolve(m1, m2)).to.have.lengthOf.above(0)
+        resolver.resolve(m2, m1)
+        expect(scrollDown).to.be.true
         done()
       }, 50)
     })

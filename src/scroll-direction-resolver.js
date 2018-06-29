@@ -8,7 +8,7 @@ import Monitor from './monitor'
  */
 
 /**
- * This resolver can recognize scroll direction of scroll events.
+ * This resolver can recognize scroll direction.
  * @type {ScrollDirectionResolver}
  */
 const ScrollDirectionResolver = (() => {
@@ -18,10 +18,12 @@ const ScrollDirectionResolver = (() => {
   }
 
   const Data = {
-    SCROLL_UP_CLASSES: 'scrollUpClasses',
-    SCROLL_DOWN_CLASSES: 'scrollDownClasses',
-    SCROLL_LEFT_CLASSES: 'scrollLeftClasses',
-    SCROLL_RIGHT_CLASSES: 'scrollRightClasses'
+    TARGET: 'target',
+    INTERVAL: 'interval',
+    SCROLL_UP: 'scrollUp',
+    SCROLL_DOWN: 'scrollDown',
+    SCROLL_LEFT: 'scrollLeft',
+    SCROLL_RIGHT: 'scrollRight'
   }
 
   const Events = {
@@ -36,17 +38,29 @@ const ScrollDirectionResolver = (() => {
 
   class ScrollDirectionResolver {
 
-    constructor(interval) {
-      this._interval = interval !== undefined ? interval : DEFAULT_INTERVAL
+    constructor(subscriber, interval) {
+      this.subscriber = subscriber
+      this.interval = interval
       this._ticking = false
+    }
+
+    get subscriber() {
+      return this._subscriber
+    }
+
+    set subscriber(subscriber) {
+      if (!(subscriber instanceof EventTarget)) {
+        throw new Error('The subscriber must be an instance of EventTarget!')
+      }
+      this._subscriber = subscriber
     }
 
     get interval() {
       return this._interval
     }
 
-    set interval(value) {
-      this._interval = value
+    set interval(interval) {
+      this._interval = Number(interval) || DEFAULT_INTERVAL
     }
 
     get eventTypes() {
@@ -60,11 +74,18 @@ const ScrollDirectionResolver = (() => {
       }
 
       for (const subscriber of document.querySelectorAll(Selectors.SCROLL_DIRECTION_MONITOR)) {
+        const interval = subscriber.dataset[Data.INTERVAL]
+        const targetData = subscriber.dataset[Data.TARGET]
+        const targets = targetData ? document.querySelectorAll(targetData) : [window]
+        for (const target of targets) {
+          Monitor.of(target).addResolver(new ScrollDirectionResolver(subscriber, interval))
+        }
+
         const toggleClasses = {
-          up: spreadClasses(subscriber.dataset[Data.SCROLL_UP_CLASSES]),
-          down: spreadClasses(subscriber.dataset[Data.SCROLL_DOWN_CLASSES]),
-          left: spreadClasses(subscriber.dataset[Data.SCROLL_LEFT_CLASSES]),
-          right: spreadClasses(subscriber.dataset[Data.SCROLL_RIGHT_CLASSES])
+          up: spreadClasses(subscriber.dataset[Data.SCROLL_UP]),
+          down: spreadClasses(subscriber.dataset[Data.SCROLL_DOWN]),
+          left: spreadClasses(subscriber.dataset[Data.SCROLL_LEFT]),
+          right: spreadClasses(subscriber.dataset[Data.SCROLL_RIGHT])
         }
 
         subscriber.addEventListener(Events.SCROLL_UP, () => {
@@ -107,12 +128,13 @@ const ScrollDirectionResolver = (() => {
         }
       }
 
-      return events
+      for (let event of events) {
+        this._subscriber.dispatchEvent(event)
+      }
     }
   }
 
   window.addEventListener(Events.DOM_CONTENT_LOADED, () => {
-    Monitor.registerResolver(new ScrollDirectionResolver())
     ScrollDirectionResolver._initByData()
   })
 
