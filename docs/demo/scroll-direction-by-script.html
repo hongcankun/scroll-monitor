@@ -10,6 +10,10 @@
 
     .demo {
       height: 100px;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
     }
 
     .sticky-top {
@@ -27,17 +31,20 @@
   </style>
 </head>
 <body>
-  <div class="demo sticky-top" data-monitor="scroll">
+  <div class="demo">
     scroll up or down to see effect
   </div>
   <script src="../assert/script/scroll-monitor.umd.min.js"></script>
   <script>
+    var Monitor = window.scrollMonitor.Monitor
+    var ScrollDirectionResolver = window.scrollMonitor.ScrollDirectionResolver
     var element = document.querySelector('.demo')
-    element.addEventListener('scroll.up.scroll-monitor', evt => {
+    Monitor.of(window).addResolver(new ScrollDirectionResolver(element))
+    element.addEventListener('scroll.up.scroll-monitor', () => {
       element.classList.remove('scroll-down')
       element.classList.add('scroll-up')
     })
-    element.addEventListener('scroll.down.scroll-monitor', evt => {
+    element.addEventListener('scroll.down.scroll-monitor', () => {
       element.classList.remove('scroll-up')
       element.classList.add('scroll-down')
     })
