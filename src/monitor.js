@@ -126,10 +126,13 @@ const Monitor = (() => {
 
     /**
      * Add a resolver to this monitor.
-     * @param resolver should have a function named resolve
+     * @param resolver should be a function or an object that have a function named resolve
      * @throws when resolver is invalid
      */
     addResolver(resolver) {
+      if (typeof resolver === 'function') {
+        resolver = {resolve: resolver}
+      }
       if (typeof resolver.resolve !== 'function') {
         throw new Error('The resolver should have a function named resolve!')
       }

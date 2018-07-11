@@ -181,16 +181,26 @@ describe('Monitor', function () {
   })
 
   describe('#addResolver', function () {
-    it('should add resolver successfully when resolver is valid', function () {
+    it('should add resolver successfully when resolver is a function', function () {
+      var monitor = Monitor.of(window)
+      monitor.addResolver(function () {
+      })
+      expect(monitor.resolvers).to.have.property('size', 1)
+      monitor.resolvers.forEach(function (value) {
+        expect(value).to.respondTo('resolve')
+      })
+    })
+
+    it('should add resolver successfully when resolver is an object that contains a function named resolve', function () {
       var resolver = new Resolver()
       var monitor = Monitor.of(window)
       monitor.addResolver(resolver)
       expect(monitor.resolvers).to.have.key(resolver)
     })
 
-    it('should throw error when resolver is invalid', function () {
+    it('should throw error when resolver is not a function or a valid object', function () {
       expect(function () {
-        Monitor.of(window).addResolver(Monitor)
+        Monitor.of(window).addResolver({})
       }).to.throw()
     })
   })
