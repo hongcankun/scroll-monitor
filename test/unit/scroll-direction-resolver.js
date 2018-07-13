@@ -10,11 +10,11 @@ describe('ScrollDirectionResolver', function () {
     it('should create a ScrollDirectionResolver as expected', function () {
       var resolver = new ScrollDirectionResolver(window)
       expect(resolver).to.have.property('subscriber', window)
-      expect(resolver).to.have.property('interval', 50)
+      expect(resolver._ticker).to.have.property('interval', 50)
 
       resolver = new ScrollDirectionResolver(document.body, 100)
       expect(resolver).to.have.property('subscriber', document.body)
-      expect(resolver).to.have.property('interval', 100)
+      expect(resolver._ticker).to.have.property('interval', 100)
     })
 
     it('should throw error when the given subscriber is invalid', function () {
@@ -41,31 +41,6 @@ describe('ScrollDirectionResolver', function () {
         var resolver = new ScrollDirectionResolver(window)
         resolver.subscriber = {}
       }).to.throw()
-    })
-  })
-
-  describe('$interval', function () {
-    it('should return the interval of the resolver', function () {
-      var resolver = new ScrollDirectionResolver(window)
-      expect(resolver.interval).to.be.equal(50)
-    })
-
-    it('should set interval of the resolver as expected', function () {
-      var resolver = new ScrollDirectionResolver(window)
-      resolver.interval = 100
-      expect(resolver.interval).to.be.equal(100)
-    })
-
-    it('should set default interval to the resolver when given interval is invalid', function () {
-      var resolver = new ScrollDirectionResolver(window, 100)
-      resolver.interval = 'invalid'
-      expect(resolver.interval).to.be.equal(50)
-    })
-  })
-
-  describe('#eventTypes', function () {
-    it('should return an array contains defined event types', function () {
-      expect(new ScrollDirectionResolver(window)).to.have.property('eventTypes').that.has.lengthOf(4)
     })
   })
 

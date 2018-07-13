@@ -15,6 +15,107 @@ describe('Monitor', function () {
     expect(Monitor).to.be.a('function')
   })
 
+  describe('BaseResolver', function () {
+    describe('$getter', function () {
+      it('should return the BaseResolver as a function', function () {
+        expect(Monitor.BaseResolver).to.be.a('function')
+      })
+    })
+
+    describe('@constructor', function () {
+      it('should create a resolver without ticking when interval is not supplied', function () {
+        var resolver = new Monitor.BaseResolver(window)
+        expect(resolver).to.not.have.property('_ticker')
+      })
+
+      it('should create a resolver with ticking when interval is supplied, even though it is null', function () {
+        expect(new Monitor.BaseResolver(window, null)).to.have.property('_ticker')
+        expect(new Monitor.BaseResolver(window, 100)._ticker).to.have.property('interval', 100)
+      })
+
+      it('should throw error when subscriber is invalid', function () {
+        expect(function () {
+          new Monitor.BaseResolver({})
+        }).to.throw()
+      })
+    })
+
+    describe('$subscriber', function () {
+      it('should return the subscriber', function () {
+        expect(new Monitor.BaseResolver(window)).to.have.property('subscriber', window)
+      })
+
+      it('should set the subscriber successfully when it is valid', function () {
+        var resolver = new Monitor.BaseResolver(window)
+        resolver.subscriber = document
+        expect(resolver).to.have.property('subscriber', document)
+      })
+
+      it('should throw error when set a invalid subscriber to resolver', function () {
+        expect(function () {
+          new Monitor.BaseResolver(window).subscriber = {}
+        }).to.throw()
+      })
+    })
+
+    describe('#resolve', function () {
+      it('should do nothing by default', function () {
+        var resolver = new Monitor.BaseResolver(window)
+        expect(function () {
+          resolver.resolve()
+        }).not.to.throw()
+      })
+
+      it('should invoke function _doResolver as expected', function () {
+        var resolver = new Monitor.BaseResolver(window)
+        resolver._doResolve = function () {
+          this.executed = true
+        }
+        resolver.resolve(null, null, null)
+        expect(resolver.executed).to.be.true
+      })
+
+      it('should invoke function _doResolver with ticking when interval is specified', function (done) {
+        var resolver = new Monitor.BaseResolver(window, 100)
+        resolver.count = 0
+        resolver._doResolve = function () {
+          this.count++
+        }
+        resolver.resolve()
+        expect(resolver.count).to.be.equal(1)
+
+        resolver.resolve()
+        expect(resolver.count).to.be.equal(1)
+
+        setTimeout(function () {
+          resolver.resolve()
+          expect(resolver.count).to.be.equal(2)
+          done()
+        }, 100)
+      })
+    })
+  })
+
+  describe('Util', function () {
+    describe('$getter', function () {
+      it('should return as an Object', function () {
+        expect(Monitor.Util).to.be.a('object')
+      })
+    })
+
+    describe('@splitString', function () {
+      it('should split string using spaces as separator by default', function () {
+        var string = ' a  b   c   '
+        expect(Monitor.Util.splitString(string)).to.have.all.members(['a', 'b', 'c'])
+      })
+
+      it('should split string using specified separator', function () {
+        var string = ' a , b,c '
+        expect(Monitor.Util.splitString(string, /,/g)).to.have.all.members([' a ', ' b', 'c '])
+      })
+    })
+  })
+
   describe('@constructor', function () {
     it('should create a monitor properly', function () {
       var monitor = new Monitor(window)
@@ -138,14 +239,18 @@ describe('Monitor', function () {
     })
   })
 
-  describe('@checkTarget', function () {
-    it('should not throw error when target is an instance of Window or Element', function () {
+  describe('@_checkTarget', function () {
+    it('should not throw error when target is an instance of Window or Element or Document', function () {
       expect(function () {
         Monitor._checkTarget(window)
       }).to.not.throw()
 
       expect(function () {
         Monitor._checkTarget(document.body)
+      }).to.not.throw()
+
+      expect(function () {
+        Monitor._checkTarget(document)
       }).to.not.throw()
     })
 
