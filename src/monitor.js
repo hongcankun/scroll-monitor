@@ -19,7 +19,7 @@ const Monitor = (() => {
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
   }
 
-  const TargetTypes = [Window, Element]
+  const TargetTypes = [Window, Document, Element]
   const Monitors = new Map()
 
   class BaseResolver {
@@ -55,7 +55,6 @@ const Monitor = (() => {
       }
       events.forEach(event => this._subscriber.dispatchEvent(event))
     }
-
 
     // eslint-disable-next-line no-unused-vars
     _doResolve(events, lastMetric, crtMetric, event) {
