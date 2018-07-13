@@ -9,6 +9,11 @@ const Monitor = (() => {
 
   const NAMESPACE = 'scroll-monitor'
 
+  const Data = {
+    TARGET: 'target',
+    INTERVAL: 'interval'
+  }
+
   const Events = {
     SCROLL: 'scroll',
     DOM_CONTENT_LOADED: 'DOMContentLoaded'
@@ -16,6 +21,47 @@ const Monitor = (() => {
 
   const TargetTypes = [Window, Element]
   const Monitors = new Map()
+
+  class BaseResolver {
+    constructor(subscirber, interval, defaultInterval = 50) {
+      this.subscriber = subscirber
+      if (interval !== undefined) {
+        interval = Number(interval) > 0 ? Number(interval) : defaultInterval
+        this._ticker = {interval: interval, ticking: false}
+      }
+    }
+
+    get subscriber() {
+      return this._subscriber
+    }
+
+    set subscriber(subscriber) {
+      if (!(subscriber instanceof EventTarget)) {
+        throw new Error('The subscriber must be an instance of EventTarget!')
+      }
+      this._subscriber = subscriber
+    }
+
+    resolve(lastMetric, crtMetric, event) {
+      const events = []
+      if (this._ticker !== undefined) {
+        if (!this._ticker.ticking) {
+          this._ticker.ticking = true
+          setTimeout(() => this._ticker.ticking = false, this._ticker.interval)
+          this._doResolve(events, lastMetric, crtMetric, event)
+        }
+      } else {
+        this._doResolve(events, lastMetric, crtMetric, event)
+      }
+      events.forEach(event => this._subscriber.dispatchEvent(event))
+    }
+
+
+    // eslint-disable-next-line no-unused-vars
+    _doResolve(events, lastMetric, crtMetric, event) {
+      // do nothing
+    }
+  }
 
   class Monitor {
 
@@ -44,6 +90,14 @@ const Monitor = (() => {
     }
 
     // Static
+
+    static get Util() {
+      return Util
+    }
+
+    static get BaseResolver() {
+      return BaseResolver
+    }
 
     static get NAMESPACE() {
       return NAMESPACE
@@ -218,6 +272,48 @@ const Monitor = (() => {
 
     get left() {
       return this._left
+    }
+  }
+
+  /**
+   * Utility for resolvers.
+   */
+  const Util = {
+    /**
+     * Notify listener when the content of dom has been loaded.
+     * @param listener the listener to be notified
+     */
+    onLoaded: function (listener) {
+      window.addEventListener(Events.DOM_CONTENT_LOADED, listener)
+    },
+    /**
+     * A convenient function to split string by supplied pattern.
+     * @param string the string to be split
+     * @param pattern the split pattern
+     * @return {string[]}
+     */
+    splitString: function (string, pattern = /\s+/g) {
+      string = string || ''
+      return string.split(pattern).filter(Boolean)
+    },
+    /**
+     * Get the targets of the subscriber by data attribute.
+     * @param subscriber the subscriber of the scroll monitor
+     * @param dataAttr the data attribute that contains the targets
+     * @return {Array} the targets of the subscriber
+     */
+    getTargets: function (subscriber, dataAttr = Data.TARGET) {
+      const targetData = subscriber.dataset[dataAttr]
+      return targetData ? document.querySelectorAll(targetData) : [window]
+    },
+    /**
+     * Get the ticking interval of the subscriber by data attribute.
+     * @param subscriber the subscriber of the scroll monitor
+     * @param dataAttr the data attribute contains the interval
+     * @return {string | undefined}
+     */
+    getInterval: function (subscriber, dataAttr = Data.INTERVAL) {
+      return subscriber.dataset[dataAttr]
     }
   }
 
