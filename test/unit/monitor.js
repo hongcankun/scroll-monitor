@@ -218,7 +218,7 @@ describe('Monitor', function () {
       }).to.throw()
     })
 
-    it('should return a ScrollMetric when target is an instance of Window', function () {
+    it('should return a ScrollMetric when target is valid', function () {
       var scrollMetric = Monitor._resolveMetric(window)
       expect(scrollMetric).to.have.property('scrollHeight').that.is.a('number')
       expect(scrollMetric).to.have.property('scrollWidth').that.is.a('number')
@@ -226,16 +226,8 @@ describe('Monitor', function () {
       expect(scrollMetric).to.have.property('viewWidth').that.is.a('number')
       expect(scrollMetric).to.have.property('top').that.is.a('number')
       expect(scrollMetric).to.have.property('left').that.is.a('number')
-    })
-
-    it('should return a ScrollMetric when target is an instance of Element', function () {
-      var scrollMetric = Monitor._resolveMetric(document.body)
-      expect(scrollMetric).to.have.property('scrollHeight').that.is.a('number')
-      expect(scrollMetric).to.have.property('scrollWidth').that.is.a('number')
-      expect(scrollMetric).to.have.property('viewHeight').that.is.a('number')
-      expect(scrollMetric).to.have.property('viewWidth').that.is.a('number')
-      expect(scrollMetric).to.have.property('top').that.is.a('number')
-      expect(scrollMetric).to.have.property('left').that.is.a('number')
+      expect(scrollMetric).to.have.property('bottom').that.is.a('number')
+      expect(scrollMetric).to.have.property('right').that.is.a('number')
     })
   })
 

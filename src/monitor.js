@@ -272,6 +272,14 @@ const Monitor = (() => {
     get left() {
       return this._left
     }
+
+    get bottom() {
+      return this._scrollHeight - this._top - this._viewHeight
+    }
+
+    get right() {
+      return this._scrollWidth - this._left - this._viewWidth
+    }
   }
 
   /**
