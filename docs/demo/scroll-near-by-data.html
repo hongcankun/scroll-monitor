@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Near Resolver Demo By Data Attributes</title>
+  <style>
+    body {
+      height: 1500px;
+    }
+
+    .demo {
+      height: 100px;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+    }
+
+    .sticky-top {
+      position: sticky;
+      top: 100px;
+    }
+
+    .near-top {
+      background-color: red;
+    }
+
+    .near-bottom {
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo" data-monitor="scroll-near" data-interval="10"
+       data-distance-top="0" data-distance-bottom="0"
+       data-near-top="near-top" data-near-bottom="near-bottom">
+    scroll up to top or down to bottom to see effect
+  </div>
+  <script src="../assert/script/scroll-monitor.umd.min.js"></script>
+</body>
+</html>

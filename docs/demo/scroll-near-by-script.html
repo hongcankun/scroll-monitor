@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Near Resolver Demo By JavaScript</title>
+  <style>
+    body {
+      height: 1500px;
+    }
+
+    .demo {
+      height: 100px;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+    }
+
+    .sticky-top {
+      position: sticky;
+      top: 100px;
+    }
+
+    .near-top {
+      background-color: red;
+    }
+
+    .near-bottom {
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo">
+    scroll up to top or down to bottom to see effect
+  </div>
+  <script src="../assert/script/scroll-monitor.umd.min.js"></script>
+  <script>
+    var Monitor = window.scrollMonitor.Monitor
+    var ScrollNearResolver = window.scrollMonitor.ScrollNearResolver
+    var element = document.querySelector('.demo')
+    Monitor.of(window).addResolver(new ScrollNearResolver(element))
+    element.addEventListener('scroll.near.top.scroll-monitor', () => {
+      element.classList.remove('near-bottom')
+      element.classList.add('near-top')
+    })
+    element.addEventListener('scroll.near.bottom.scroll-monitor', () => {
+      element.classList.remove('near-top')
+      element.classList.add('near-bottom')
+    })
+  </script>
+</body>
+</html>
