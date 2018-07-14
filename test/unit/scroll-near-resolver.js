@@ -5,7 +5,7 @@ describe('ScrollNearResolver', function () {
   describe('@constructor', function () {
     it('should create a resolve using default interval and options when not supplied', function () {
       var resolver = new Resolver(window)
-      expect(resolver._ticker).to.have.property('interval', 50)
+      expect(resolver._ticker).to.have.property('interval', 10)
       expect(resolver).to.have.property('_options').that.eql({top: 100, bottom: 100, left: 100, right: 100})
     })
 

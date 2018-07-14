@@ -50,7 +50,7 @@ const ScrollNearResolver = (() => {
   class ScrollNearResolver extends Monitor.BaseResolver {
 
     constructor(subscriber, interval = null, options) {
-      super(subscriber, interval)
+      super(subscriber, interval, 10)
       this._options = Object.assign({}, DEFAULT_OPTIONS, options)
     }
 
