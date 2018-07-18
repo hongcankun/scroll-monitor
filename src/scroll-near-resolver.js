@@ -8,7 +8,7 @@ import Monitor from './monitor'
  */
 
 /**
- * A resolver used to determine it the target is scrolling towards edges and
+ * A resolver used to determine if the target is scrolling towards edges and
  * within certain distance, including top, bottom, left, and right edges.
  * @type {ScrollNearResolver}
  */
