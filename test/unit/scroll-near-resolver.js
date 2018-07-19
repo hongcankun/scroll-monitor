@@ -1,7 +1,7 @@
-var Monitor = window.Monitor || window.scrollMonitor.Monitor
-var Resolver = window.ScrollNearResolver || window.scrollMonitor.ScrollNearResolver
-
 describe('ScrollNearResolver', function () {
+  var Monitor = window.Monitor || window.scrollMonitor.Monitor
+  var Resolver = window.ScrollNearResolver || window.scrollMonitor.ScrollNearResolver
+
   describe('@constructor', function () {
     it('should create a resolve using default interval and options when not supplied', function () {
       var resolver = new Resolver(window)

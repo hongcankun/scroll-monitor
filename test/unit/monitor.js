@@ -1,6 +1,5 @@
-var Monitor = window.Monitor || window.scrollMonitor.Monitor
-
 describe('Monitor', function () {
+  var Monitor = window.Monitor || window.scrollMonitor.Monitor
 
   function Resolver() {
     this.resolve = function () {

@@ -1,7 +1,7 @@
-var Monitor = window.Monitor || window.scrollMonitor.Monitor
-var ScrollDirectionResolver = window.ScrollDirectionResolver || window.scrollMonitor.ScrollDirectionResolver
-
 describe('ScrollDirectionResolver', function () {
+  var Monitor = window.Monitor || window.scrollMonitor.Monitor
+  var ScrollDirectionResolver = window.ScrollDirectionResolver || window.scrollMonitor.ScrollDirectionResolver
+
   it('should define ScrollDirectionResolver as a function', function () {
     expect(ScrollDirectionResolver).to.be.a('function')
   })
