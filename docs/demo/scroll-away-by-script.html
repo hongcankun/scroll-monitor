@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Away Resolver Demo By JavaScript</title>
+  <style>
+    body {
+      height: 1500px;
+    }
+
+    .demo {
+      height: 100px;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+    }
+
+    .away-top {
+      background-color: red;
+    }
+
+    .away-bottom {
+      color: green;
+      font-size: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo" class="demo">
+    scroll away from top or bottom edges to see effects
+  </div>
+  <script src="../assert/script/scroll-monitor.umd.min.js"></script>
+  <script>
+    var Monitor = window.scrollMonitor.Monitor
+    var Resolver = window.scrollMonitor.ScrollAwayResolver
+    var element = document.querySelector('#demo')
+    Monitor.of(window).addResolver(new Resolver(element, 100, {top: 50, bottom: 200}))
+    element.addEventListener('scroll.away.top.scroll-monitor', () => {
+      element.classList.add('away-top')
+    })
+    element.addEventListener('scroll.away.top.off.scroll-monitor', () => {
+      element.classList.remove('away-top')
+    })
+
+    element.addEventListener('scroll.away.bottom.scroll-monitor', () => {
+      element.classList.add('away-bottom')
+    })
+    element.addEventListener('scroll.away.bottom.off.scroll-monitor', () => {
+      element.classList.remove('away-bottom')
+    })
+  </script>
+</body>
+</html>

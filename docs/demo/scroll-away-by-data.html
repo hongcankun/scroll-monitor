@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scroll Away Resolver Demo By Data Attributes</title>
+  <style>
+    body {
+      height: 1500px;
+    }
+
+    .demo {
+      height: 100px;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+    }
+
+    .away-top {
+      background-color: red;
+    }
+
+    .away-bottom {
+      color: green;
+      font-size: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo" data-monitor="scroll-away"
+       data-distance-top="100" data-distance-bottom="200"
+       data-away-top="away-top" data-away-bottom="away-bottom">
+    scroll away from top or bottom edges to see effects
+  </div>
+  <script src="../assert/script/scroll-monitor.umd.min.js"></script>
+</body>
+</html>
