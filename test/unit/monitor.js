@@ -217,16 +217,24 @@ describe('Monitor', function () {
       }).to.throw()
     })
 
-    it('should return a ScrollMetric when target is valid', function () {
-      var scrollMetric = Monitor._resolveMetric(window)
-      expect(scrollMetric).to.have.property('scrollHeight').that.is.a('number')
-      expect(scrollMetric).to.have.property('scrollWidth').that.is.a('number')
-      expect(scrollMetric).to.have.property('viewHeight').that.is.a('number')
-      expect(scrollMetric).to.have.property('viewWidth').that.is.a('number')
-      expect(scrollMetric).to.have.property('top').that.is.a('number')
-      expect(scrollMetric).to.have.property('left').that.is.a('number')
-      expect(scrollMetric).to.have.property('bottom').that.is.a('number')
-      expect(scrollMetric).to.have.property('right').that.is.a('number')
+    it('should return a correct ScrollMetric that contains 8 attributes when target is valid', function () {
+      var metric = Monitor._resolveMetric(window)
+      expect(metric).to.have.property('scrollHeight').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('scrollWidth').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('viewHeight').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('viewWidth').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('top').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('left').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('bottom').that.is.a('number').and.is.least(0)
+      expect(metric).to.have.property('right').that.is.a('number').and.is.least(0)
+
+      expect(metric.top + metric.bottom + metric.viewHeight).to.be.equal(metric.scrollHeight)
+      expect(metric.left + metric.right + metric.viewWidth).to.be.equal(metric.scrollWidth)
+
+      // only for window
+      metric = Monitor._resolveMetric(window)
+      expect(metric.viewHeight).to.be.most(window.innerHeight)
+      expect(metric.viewWidth).to.be.most(window.innerWidth)
     })
   })
 
