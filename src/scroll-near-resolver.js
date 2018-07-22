@@ -23,6 +23,7 @@ const ScrollNearResolver = (() => {
     NEAR_BOTTOM: 'nearBottom',
     NEAR_LEFT: 'nearLeft',
     NEAR_RIGHT: 'nearRight',
+
     DISTANCE_TOP: 'distanceTop',
     DISTANCE_BOTTOM: 'distanceBottom',
     DISTANCE_LEFT: 'distanceLeft',
@@ -32,10 +33,13 @@ const ScrollNearResolver = (() => {
   const Events = {
     SCROLL_NEAR_TOP: `scroll.near.top.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_TOP_OFF: `scroll.near.top.off.${Monitor.NAMESPACE}`,
+
     SCROLL_NEAR_BOTTOM: `scroll.near.bottom.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_BOTTOM_OFF: `scroll.near.bottom.off.${Monitor.NAMESPACE}`,
+
     SCROLL_NEAR_LEFT: `scroll.near.left.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_LEFT_OFF: `scroll.near.left.off.${Monitor.NAMESPACE}`,
+
     SCROLL_NEAR_RIGHT: `scroll.near.right.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_RIGHT_OFF: `scroll.near.right.off.${Monitor.NAMESPACE}`
   }
