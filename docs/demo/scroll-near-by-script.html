@@ -41,12 +41,16 @@
     var element = document.querySelector('.demo')
     Monitor.of(window).addResolver(new ScrollNearResolver(element))
     element.addEventListener('scroll.near.top.scroll-monitor', () => {
-      element.classList.remove('near-bottom')
       element.classList.add('near-top')
     })
-    element.addEventListener('scroll.near.bottom.scroll-monitor', () => {
+    element.addEventListener('scroll.near.top.off.scroll-monitor', () => {
       element.classList.remove('near-top')
+    })
+    element.addEventListener('scroll.near.bottom.scroll-monitor', () => {
       element.classList.add('near-bottom')
+    })
+    element.addEventListener('scroll.near.bottom.off.scroll-monitor', () => {
+      element.classList.remove('near-bottom')
     })
   </script>
 </body>
