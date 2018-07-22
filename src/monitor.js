@@ -149,10 +149,10 @@ const Monitor = (() => {
     static _resolveMetric(target) {
       let metric
       if (target instanceof Window) {
-        const body = target.document.body
+        const docElem = target.document.documentElement
         metric = new ScrollMetric(
-          body.scrollHeight, body.scrollWidth,
-          body.clientHeight, body.clientWidth,
+          docElem.scrollHeight, docElem.scrollWidth,
+          docElem.clientHeight, docElem.clientWidth,
           target.pageYOffset, target.pageXOffset)
       } else if (target instanceof Element) {
         metric = new ScrollMetric(
