@@ -31,9 +31,13 @@ const ScrollNearResolver = (() => {
 
   const Events = {
     SCROLL_NEAR_TOP: `scroll.near.top.${Monitor.NAMESPACE}`,
+    SCROLL_NEAR_TOP_OFF: `scroll.near.top.off.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_BOTTOM: `scroll.near.bottom.${Monitor.NAMESPACE}`,
+    SCROLL_NEAR_BOTTOM_OFF: `scroll.near.bottom.off.${Monitor.NAMESPACE}`,
     SCROLL_NEAR_LEFT: `scroll.near.left.${Monitor.NAMESPACE}`,
-    SCROLL_NEAR_RIGHT: `scroll.near.right.${Monitor.NAMESPACE}`
+    SCROLL_NEAR_LEFT_OFF: `scroll.near.left.off.${Monitor.NAMESPACE}`,
+    SCROLL_NEAR_RIGHT: `scroll.near.right.${Monitor.NAMESPACE}`,
+    SCROLL_NEAR_RIGHT_OFF: `scroll.near.right.off.${Monitor.NAMESPACE}`
   }
 
   const Util = Monitor.Util
@@ -79,35 +83,63 @@ const ScrollNearResolver = (() => {
 
         subscriber.addEventListener(Events.SCROLL_NEAR_TOP, () => {
           subscriber.classList.add(...toggleClasses.top)
-          subscriber.classList.remove(...toggleClasses.bottom)
         })
-        subscriber.addEventListener(Events.SCROLL_NEAR_BOTTOM, () => {
-          subscriber.classList.add(...toggleClasses.bottom)
+        subscriber.addEventListener(Events.SCROLL_NEAR_TOP_OFF, () => {
           subscriber.classList.remove(...toggleClasses.top)
         })
+
+        subscriber.addEventListener(Events.SCROLL_NEAR_BOTTOM, () => {
+          subscriber.classList.add(...toggleClasses.bottom)
+        })
+        subscriber.addEventListener(Events.SCROLL_NEAR_BOTTOM_OFF, () => {
+          subscriber.classList.remove(...toggleClasses.bottom)
+        })
+
         subscriber.addEventListener(Events.SCROLL_NEAR_LEFT, () => {
           subscriber.classList.add(...toggleClasses.left)
-          subscriber.classList.remove(...toggleClasses.right)
         })
+        subscriber.addEventListener(Events.SCROLL_NEAR_LEFT_OFF, () => {
+          subscriber.classList.remove(...toggleClasses.left)
+        })
+
         subscriber.addEventListener(Events.SCROLL_NEAR_RIGHT, () => {
           subscriber.classList.add(...toggleClasses.right)
-          subscriber.classList.remove(...toggleClasses.left)
+        })
+        subscriber.addEventListener(Events.SCROLL_NEAR_RIGHT_OFF, () => {
+          subscriber.classList.remove(...toggleClasses.right)
         })
       }
     }
 
     _doResolve(events, lastMetric, crtMetric) {
-      if (crtMetric.top < lastMetric.top && crtMetric.top <= this._options.top) {
-        events.push(new Event(Events.SCROLL_NEAR_TOP))
+      // scroll vertically
+      if (crtMetric.top !== lastMetric.top) {
+        if (crtMetric.top < lastMetric.top && crtMetric.top <= this._options.top) {
+          events.push(new Event(Events.SCROLL_NEAR_TOP))
+        } else {
+          events.push(new Event(Events.SCROLL_NEAR_TOP_OFF))
+        }
+
+        if (crtMetric.top > lastMetric.top && crtMetric.bottom <= this._options.bottom) {
+          events.push(new Event(Events.SCROLL_NEAR_BOTTOM))
+        } else {
+          events.push(new Event(Events.SCROLL_NEAR_BOTTOM_OFF))
+        }
       }
-      if (crtMetric.top > lastMetric.top && crtMetric.bottom <= this._options.bottom) {
-        events.push(new Event(Events.SCROLL_NEAR_BOTTOM))
-      }
-      if (crtMetric.left < lastMetric.left && crtMetric.left <= this._options.left) {
-        events.push(new Event(Events.SCROLL_NEAR_LEFT))
-      }
-      if (crtMetric.left > lastMetric.left && crtMetric.right <= this._options.right) {
-        events.push(new Event(Events.SCROLL_NEAR_RIGHT))
+
+      // scroll horizontally
+      if (crtMetric.left !== lastMetric.left) {
+        if (crtMetric.left < lastMetric.left && crtMetric.left <= this._options.left) {
+          events.push(new Event(Events.SCROLL_NEAR_LEFT))
+        } else {
+          events.push(new Event(Events.SCROLL_NEAR_LEFT_OFF))
+        }
+
+        if (crtMetric.left > lastMetric.left && crtMetric.right <= this._options.right) {
+          events.push(new Event(Events.SCROLL_NEAR_RIGHT))
+        } else {
+          events.push(new Event(Events.SCROLL_NEAR_RIGHT_OFF))
+        }
       }
     }
   }

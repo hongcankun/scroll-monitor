@@ -67,14 +67,56 @@ describe('ScrollNearResolver', function () {
       expect(subscriber.classList.contains('top2')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.near.bottom.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.true
+      expect(subscriber.classList.contains('top2')).to.be.true
       expect(subscriber.classList.contains('bottom')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.near.left.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.true
+      expect(subscriber.classList.contains('top2')).to.be.true
+      expect(subscriber.classList.contains('bottom')).to.be.true
       expect(subscriber.classList.contains('left')).to.be.true
       expect(subscriber.classList.contains('left2')).to.be.true
 
       subscriber.dispatchEvent(new Event('scroll.near.right.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.true
+      expect(subscriber.classList.contains('top2')).to.be.true
+      expect(subscriber.classList.contains('bottom')).to.be.true
+      expect(subscriber.classList.contains('left')).to.be.true
+      expect(subscriber.classList.contains('left2')).to.be.true
       expect(subscriber.classList.contains('right')).to.be.true
+
+      subscriber.dispatchEvent(new Event('scroll.near.top.off.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.false
+      expect(subscriber.classList.contains('top2')).to.be.false
+      expect(subscriber.classList.contains('bottom')).to.be.true
+      expect(subscriber.classList.contains('left')).to.be.true
+      expect(subscriber.classList.contains('left2')).to.be.true
+      expect(subscriber.classList.contains('right')).to.be.true
+
+      subscriber.dispatchEvent(new Event('scroll.near.bottom.off.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.false
+      expect(subscriber.classList.contains('top2')).to.be.false
+      expect(subscriber.classList.contains('bottom')).to.be.false
+      expect(subscriber.classList.contains('left')).to.be.true
+      expect(subscriber.classList.contains('left2')).to.be.true
+      expect(subscriber.classList.contains('right')).to.be.true
+
+      subscriber.dispatchEvent(new Event('scroll.near.left.off.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.false
+      expect(subscriber.classList.contains('top2')).to.be.false
+      expect(subscriber.classList.contains('bottom')).to.be.false
+      expect(subscriber.classList.contains('left')).to.be.false
+      expect(subscriber.classList.contains('left2')).to.be.false
+      expect(subscriber.classList.contains('right')).to.be.true
+
+      subscriber.dispatchEvent(new Event('scroll.near.right.off.scroll-monitor'))
+      expect(subscriber.classList.contains('top')).to.be.false
+      expect(subscriber.classList.contains('top2')).to.be.false
+      expect(subscriber.classList.contains('bottom')).to.be.false
+      expect(subscriber.classList.contains('left')).to.be.false
+      expect(subscriber.classList.contains('left2')).to.be.false
+      expect(subscriber.classList.contains('right')).to.be.false
     })
 
     it('should add resolvers with specified distance options to monitors', function () {
@@ -98,13 +140,29 @@ describe('ScrollNearResolver', function () {
       var lastMetric = {top: 150, left: 150, bottom: 50, right: 50}
       resolver._doResolve(events, lastMetric, crtMetric)
       expect(events[0]).to.have.property('type', 'scroll.near.top.scroll-monitor')
-      expect(events[1]).to.have.property('type', 'scroll.near.left.scroll-monitor')
+      expect(events[1]).to.have.property('type', 'scroll.near.bottom.off.scroll-monitor')
+      expect(events[2]).to.have.property('type', 'scroll.near.left.scroll-monitor')
+      expect(events[3]).to.have.property('type', 'scroll.near.right.off.scroll-monitor')
 
       events = []
       lastMetric = {top: 50, left: 50, bottom: 150, right: 150}
       resolver._doResolve(events, lastMetric, crtMetric)
-      expect(events[0]).to.have.property('type', 'scroll.near.bottom.scroll-monitor')
-      expect(events[1]).to.have.property('type', 'scroll.near.right.scroll-monitor')
+      expect(events[0]).to.have.property('type', 'scroll.near.top.off.scroll-monitor')
+      expect(events[1]).to.have.property('type', 'scroll.near.bottom.scroll-monitor')
+      expect(events[2]).to.have.property('type', 'scroll.near.left.off.scroll-monitor')
+      expect(events[3]).to.have.property('type', 'scroll.near.right.scroll-monitor')
+
+      events = []
+      lastMetric = {top: 100, left: 150, bottom: 100, right: 50}
+      resolver._doResolve(events, lastMetric, crtMetric)
+      expect(events[0]).to.have.property('type', 'scroll.near.left.scroll-monitor')
+      expect(events[1]).to.have.property('type', 'scroll.near.right.off.scroll-monitor')
+
+      events = []
+      lastMetric = {top: 150, left: 100, bottom: 50, right: 100}
+      resolver._doResolve(events, lastMetric, crtMetric)
+      expect(events[0]).to.have.property('type', 'scroll.near.top.scroll-monitor')
+      expect(events[1]).to.have.property('type', 'scroll.near.bottom.off.scroll-monitor')
     })
   })
 })
