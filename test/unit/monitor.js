@@ -225,8 +225,12 @@ describe('Monitor', function () {
       expect(metric).to.have.property('viewWidth').that.is.a('number').and.is.least(0)
       expect(metric).to.have.property('top').that.is.a('number').and.is.least(0)
       expect(metric).to.have.property('left').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('bottom').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('right').that.is.a('number').and.is.least(0)
+
+      // the behaviour of Edge and Safari to evaluate the scroll[Height | Width]
+      // of the window is different from Chrome and Firefox, so bottom or right
+      // properties may be less than 0
+      expect(metric).to.have.property('bottom').that.is.a('number')
+      expect(metric).to.have.property('right').that.is.a('number')
 
       expect(metric.top + metric.bottom + metric.viewHeight).to.be.equal(metric.scrollHeight)
       expect(metric.left + metric.right + metric.viewWidth).to.be.equal(metric.scrollWidth)
