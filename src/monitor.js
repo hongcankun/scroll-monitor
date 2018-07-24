@@ -151,7 +151,8 @@ const Monitor = (() => {
       if (target instanceof Window) {
         const docElem = target.document.documentElement
         metric = new ScrollMetric(
-          docElem.scrollHeight, docElem.scrollWidth,
+          docElem.scrollHeight < docElem.clientHeight ? docElem.clientHeight : docElem.scrollHeight,
+          docElem.scrollWidth < docElem.clientWidth ? docElem.clientWidth : docElem.scrollWidth,
           docElem.clientHeight, docElem.clientWidth,
           target.pageYOffset, target.pageXOffset)
       } else if (target instanceof Element) {
