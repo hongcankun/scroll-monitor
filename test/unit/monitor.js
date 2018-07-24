@@ -217,40 +217,47 @@ describe('Monitor', function () {
       }).to.throw()
     })
 
-    it('should return a correct ScrollMetric that contains 8 attributes when target is valid', function () {
-      var metric = Monitor._resolveMetric(window)
-      expect(metric).to.have.property('scrollHeight').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('scrollWidth').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('viewHeight').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('viewWidth').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('top').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('left').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('bottom').that.is.a('number').and.is.least(0)
-      expect(metric).to.have.property('right').that.is.a('number').and.is.least(0)
+    var targets = [window, document, document.body]
+    targets.forEach(function (target) {
+      it('should return a correct ScrollMetric that contains 8 attributes when target is ' + target, function () {
+        var metric = Monitor._resolveMetric(target)
+        expect(metric).to.have.property('scrollHeight').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('scrollWidth').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('viewHeight').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('viewWidth').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('top').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('left').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('bottom').that.is.a('number').and.is.least(0)
+        expect(metric).to.have.property('right').that.is.a('number').and.is.least(0)
 
-      expect(metric.top + metric.bottom + metric.viewHeight).to.be.equal(metric.scrollHeight)
-      expect(metric.left + metric.right + metric.viewWidth).to.be.equal(metric.scrollWidth)
+        expect(metric.top + metric.bottom + metric.viewHeight).to.be.equal(metric.scrollHeight)
+        expect(metric.left + metric.right + metric.viewWidth).to.be.equal(metric.scrollWidth)
 
-      // only for window
-      metric = Monitor._resolveMetric(window)
-      expect(metric.viewHeight).to.be.most(window.innerHeight)
-      expect(metric.viewWidth).to.be.most(window.innerWidth)
+        // for window
+        if (target instanceof Window) {
+          metric = Monitor._resolveMetric(target)
+          expect(metric.viewHeight).to.be.most(target.innerHeight)
+          expect(metric.viewWidth).to.be.most(target.innerWidth)
+        }
+
+        // for document
+        if (target instanceof Document) {
+          metric = Monitor._resolveMetric(target)
+          expect(metric.viewHeight).to.be.most(target.defaultView.innerHeight)
+          expect(metric.viewWidth).to.be.most(target.defaultView.innerWidth)
+        }
+      })
     })
   })
 
   describe('@_checkTarget', function () {
-    it('should not throw error when target is an instance of Window or Element or Document', function () {
-      expect(function () {
-        Monitor._checkTarget(window)
-      }).to.not.throw()
-
-      expect(function () {
-        Monitor._checkTarget(document.body)
-      }).to.not.throw()
-
-      expect(function () {
-        Monitor._checkTarget(document)
-      }).to.not.throw()
+    var targets = [window, document, document.body]
+    targets.forEach(function (target) {
+      it('should not throw error when target is ' + target, function () {
+        expect(function () {
+          Monitor._checkTarget(target)
+        }).to.not.throw()
+      })
     })
 
     it('should throw error when target is not valid', function () {

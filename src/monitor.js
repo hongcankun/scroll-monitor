@@ -147,14 +147,19 @@ const Monitor = (() => {
     }
 
     static _resolveMetric(target) {
-      let metric
-      if (target instanceof Window) {
-        const docElem = target.document.documentElement
-        metric = new ScrollMetric(
+      function resolveMetricOfWindowLikeTarget(docElem, docWindow) {
+        return new ScrollMetric(
           docElem.scrollHeight < docElem.clientHeight ? docElem.clientHeight : docElem.scrollHeight,
           docElem.scrollWidth < docElem.clientWidth ? docElem.clientWidth : docElem.scrollWidth,
           docElem.clientHeight, docElem.clientWidth,
-          target.pageYOffset, target.pageXOffset)
+          docWindow.pageYOffset, docWindow.pageXOffset)
+      }
+
+      let metric
+      if (target instanceof Window) {
+        metric = resolveMetricOfWindowLikeTarget(target.document.documentElement, target)
+      } else if (target instanceof Document) {
+        metric = resolveMetricOfWindowLikeTarget(target.documentElement, target.defaultView)
       } else if (target instanceof Element) {
         metric = new ScrollMetric(
           target.scrollHeight, target.scrollWidth,
